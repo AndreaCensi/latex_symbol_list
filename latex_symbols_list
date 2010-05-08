@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+import re, sys
+
+def parse_definitions(file):
+    definitions = []
+    for line in file:
+        m = re.match(r'\s*\\newcommand{\\(\w+)}{(.*)}\s*%?(.*)', line)
+#        m = re.match(r'\s*\\newcommand{(\\w+)}{(.+)}(\s*%?\s*.*)', line)
+        if m:
+            symbol = m.group(1)
+            command = m.group(2)
+            description = m.group(3)
+            description= description.replace('%','')
+            definitions.append( (symbol, command, description) ) 
+    
+    
+    return definitions
+    
+def create_table(definitions, output):
+    
+    output.write("""
+\\begin{tabular}{ccl}
+    Symbol & \\TeX command & description \\\\
+    \\hline \\hline
+""")
+    for symbol, command, description in definitions:
+        output.write('$\\%s$ & \\textbackslash{}%s & %s \\\\ \n' % (symbol, symbol, description))
+    
+    output.write("""\\end{tabular} """)
+
+
+if __name__ == '__main__':
+    
+    definitions = parse_definitions(sys.stdin)
+    create_table(definitions, sys.stdout)
+    
+    
+    
+    
