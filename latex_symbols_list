@@ -3,37 +3,54 @@ import re, sys
 
 def parse_definitions(file):
     definitions = []
+    others = []
     for line in file:
         m = re.match(r'\s*\\newcommand{\\(\w+)}{(.*)}\s*%?(.*)', line)
-#        m = re.match(r'\s*\\newcommand{(\\w+)}{(.+)}(\s*%?\s*.*)', line)
         if m:
             symbol = m.group(1)
             command = m.group(2)
             description = m.group(3)
             description= description.replace('%','')
             definitions.append( (symbol, command, description) ) 
+        else:
+            others.append(line)
     
-    
-    return definitions
+    return definitions, others
     
 def create_table(definitions, output):
     
     output.write("""
-\\begin{tabular}{ccl}
+\\begin{longtable}{ccl}
     Symbol & \\TeX command & description \\\\
     \\hline \\hline
 """)
     for symbol, command, description in definitions:
         output.write('$\\%s$ & \\textbackslash{}%s & %s \\\\ \n' % (symbol, symbol, description))
     
-    output.write("""\\end{tabular} """)
+    output.write("""\\end{longtable} """)
+
+def write_new(definitions,  output, add='\\color{green}'):
+
+        for symbol, command, description in definitions:
+            output.write('\\newcommand{\\%s}{{%s%s}} %% %s \n' % (symbol, add, command, description))
+
+        output.write("""\\end{tabular} """)
 
 
 if __name__ == '__main__':
     
-    definitions = parse_definitions(sys.stdin)
-    create_table(definitions, sys.stdout)
-    
+    definitions, others = parse_definitions(sys.stdin)
+
+    if len(sys.argv) == 1:
+        create_table(definitions, sys.stdout)
+    elif sys.argv[1] == 'mod':
+        output = sys.stdout
+        for o in others:
+            output.write(o)
+        write_new(definitions, output)
+    else:
+        sys.stderr.write("Uknown command %s"%sys.argv[1])
+        sys.exit(-1)
     
     
     
