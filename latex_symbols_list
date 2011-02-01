@@ -29,12 +29,10 @@ def create_table(definitions, output):
     
     output.write("""\\end{longtable} """)
 
-def write_new(definitions,  output, add='\\color{green}'):
+def write_new(definitions,  output, add='\\color[rgb]{0,0,1}'):
 
         for symbol, command, description in definitions:
             output.write('\\newcommand{\\%s}{{%s%s}} %% %s \n' % (symbol, add, command, description))
-
-        output.write("""\\end{tabular} """)
 
 
 if __name__ == '__main__':
