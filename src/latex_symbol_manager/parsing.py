@@ -2,7 +2,7 @@ import re, sys
 from .structures import NewCommand, OtherLine, \
     SpecialComment, ParsingError, Where
 
-from .lookahead import Lookahead
+from .lookahead import Lookahead 
     
 def strip_empty(stream):
     for line in stream: #@UnusedVariable
@@ -21,8 +21,8 @@ def is_comment(line):
 
 def is_special_comment(line): 
     return bool(line.lstrip().startswith('%:'))
-    
-    
+
+
     
 def parse_stream(stream, filename, line_count=0):
     ''' 
@@ -58,7 +58,7 @@ def parse_stream(stream, filename, line_count=0):
                     raise ParsingError('No closing ":" found.', where)
                 pos = rest.index(':')
                 tag = rest[:pos]
-                lines = [ rest[pos + 1:]]
+                lines = [ rest[pos + 1:].strip()]
                 
                 while peek.lookahead(0) and is_comment(peek.lookahead(0)):
                     lines.append(peek.next())
