@@ -38,9 +38,6 @@ def write_symbol_rows(s, table, write_examples):
                         mp.parbreak()
                         mp.tex(small(verbatim_soft(s.example)))
             
-#                        ex = minipage(example_size, color_rgb(content, (0.5, 0.5, 0.5)))
-#                        table.row_tex('', '', hspace('2cm') + fbox(ex))
-
 def create_table(sections, output, write_examples=True):
     
     with latex_fragment(output) as fragment:
@@ -67,55 +64,7 @@ def create_table(sections, output, write_examples=True):
                     write_symbol_rows(s, table, write_examples)
                     
                     
-
-def create_table_old(sections, output, write_examples=True):
-    output.write("""
-\\begin{longtable}{cll}
-    Symbol & \\TeX command & description \\\\
-    \\hline \\hline
-""")
-    
-    def write_table_line(t):
-        output.write(" & ".join(t) + '\\\\ \n')
-        
-    for section in sections:
-        if section.parent:
-            parent = 'parent: %s' % section.parent
-        else: parent = ''
-        
-        write_table_line(['', '', ''])
-        
-        output.write('%s & \multicolumn{2}{|l|}{%s} \\\\ \n' % 
-                     (section.name, section.description))
-#        write_table_line((section.name, parent, ''))
-        output.write('\\hline\n')
-        if section.parent is None:
-            output.write('\\hline\n')
-            
-        symbols = [v for k, v in section.symbols.items()] #@UnusedVariable
-        symbols.sort(key=lambda v:v.symbol.lower())
-        for s in symbols:
-            
-            if s.nargs == 0:
-                write_table_line(['$%s$' % s.symbol,
-                                  texttt(latex_escape(s.symbol)),
-                              s.desc])
-            else:
-                args = ",".join(['\dots'] * s.nargs)
-                example = '%s{%s}' % (s.symbol, args)
-                
-                write_table_line(['', texttt(latex_escape(example)), s.desc])
-                
-            if s.example and write_examples:
-                
-                content = ('%s\n\n\\noindent%s' % 
-                           (s.example, small(verbatim_soft(s.example)))) 
-                                                 
-                ex = minipage(example_size, color_rgb(content, (0.5, 0.5, 0.5)))
-                write_table_line(['', '', hspace('2cm') + fbox(ex)])
-    
-    
-    output.write("""\\end{longtable} """)
+ 
 
 def main():
     sections = {}
