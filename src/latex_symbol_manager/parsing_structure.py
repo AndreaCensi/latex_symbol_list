@@ -29,7 +29,7 @@ def parse_symbols(stream, filename, sections=None, symbols=None):
     
             if el.command in symbols:
                 raise ParsingError('Already know symbol %s from %r.' % 
-                                   (el.command, symbols[el.command].where))
+                                   (el.command, symbols[el.command].where), el.where)
             s = Symbol(el.command, tex=el.body, desc=el.comment, tag=tag,
                        long=None, example=example, nargs=el.nargs, where=el.where)
             symbols[el.command] = s 

@@ -16,10 +16,10 @@ def write_symbol_rows(s, table, write_examples):
             row.cell_tex(texttt(latex_escape(s.symbol)))
             row.cell_tex(s.desc)
     else:
-        args = ",".join(['\dots'] * s.nargs)
+        args = ",".join(['...'] * s.nargs)
         example = '%s{%s}' % (s.symbol, args)
         with table.row() as row:
-            row.cell_tex('')
+            row.cell_tex(texttt(latex_escape(example)))
             row.cell_tex(texttt(latex_escape(example)))
             row.cell_tex(s.desc)
         
