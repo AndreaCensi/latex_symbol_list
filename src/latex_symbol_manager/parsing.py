@@ -61,11 +61,27 @@ def parse_stream(stream, filename, line_count=0):
                 lines = [ rest[pos + 1:].strip()]
                 
                 while peek.lookahead(0) and is_comment(peek.lookahead(0)):
-                    lines.append(peek.next())
+                    comment_line = peek.next()
+                    # Strip empty comments
+                    content = content_of_comment(comment_line)
+                    if content:
+                        lines.append(content)
         
                 yield SpecialComment(tag, lines, where)
             else:
                 yield OtherLine(line, where)
+
+def content_of_comment(comment_line):
+    # strip spaces
+    s = comment_line.strip()
+    # strip comment symbols
+    while s and s[0] == '%':
+        s = s[1:]
+    # strip left spaces
+    s = s.lstrip()
+    # return what's left
+    return s
+        
 
 def main():
     for cmd in parse_stream(sys.stdin, 'stdin'):

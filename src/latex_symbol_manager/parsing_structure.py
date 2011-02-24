@@ -30,7 +30,9 @@ def parse_symbols(stream, filename, sections=None, symbols=None):
             if el.command in symbols:
                 raise ParsingError('Already know symbol %s from %r.' % 
                                    (el.command, symbols[el.command].where), el.where)
-            s = Symbol(el.command, tex=el.body, desc=el.comment, tag=tag,
+            definition_order = len(symbols)
+            s = Symbol(el.command, definition_order=definition_order, 
+                        tex=el.body, desc=el.comment, tag=tag,
                        long=None, example=example, nargs=el.nargs, where=el.where)
             symbols[el.command] = s 
             current_section.symbols[el.command] = s
@@ -51,8 +53,10 @@ def parse_symbols(stream, filename, sections=None, symbols=None):
                 else:
                     parent = None
                 
+                definition_order = len(sections)
+                
                 section = SymbolSection(name.strip(), description.strip(),
-                                        {}, parent, {}, el.where)
+                                        {}, parent, {}, el.where, definition_order)
                 if section.name in sections:
                     raise ParsingError('Already know section %r from %r.' 
                                        % (section.name, sections[section.name].where),

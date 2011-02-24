@@ -1,26 +1,32 @@
 import sys
 
 from latex_gen import (color_rgb, small, verbatim_soft,
-    fbox, hspace, minipage, latex_escape, texttt)
+    fbox, hspace, minipage, latex_escape, texttt, emph)
 
 from .parsing_structure import parse_symbols
 from latex_gen import latex_fragment
 
+from optparse import OptionParser
 
-example_size = '9cm'
 
-def write_symbol_rows(s, table, write_examples):
+
+
+
+def raw_appearance(s):
+    return color_rgb(texttt(s), [0.5,0.5,0.5])
+
+def write_symbol_rows(s, table, write_examples, example_size):
     if s.nargs == 0:
         with table.row() as row:
+            row.cell_tex(raw_appearance(latex_escape(s.symbol)))
             row.cell_tex('$%s$' % s.symbol)
-            row.cell_tex(texttt(latex_escape(s.symbol)))
             row.cell_tex(s.desc)
     else:
         args = ",".join(['...'] * s.nargs)
         example = '%s{%s}' % (s.symbol, args)
         with table.row() as row:
-            row.cell_tex(texttt(latex_escape(example)))
-            row.cell_tex(texttt(latex_escape(example)))
+            row.cell_tex(raw_appearance(latex_escape(example)))
+            row.cell_tex('')
             row.cell_tex(s.desc)
         
     if s.example and write_examples:
@@ -29,29 +35,48 @@ def write_symbol_rows(s, table, write_examples):
             row.cell_tex()
             row.cell_tex()
             with row.cell() as cell:
-                cell.hspace('2cm')
+                # cell.hspace('2cm') # XXX:
                 
                 with cell.fbox() as box:
-                    box.color(0.5, 0.5, 0.5)
+                    box.color(0.5, 0.5, 0.5)  # XXX:
                     with box.minipage(example_size) as mp:
                         mp.tex(s.example)
                         mp.parbreak()
                         mp.tex(small(verbatim_soft(s.example)))
             
-def create_table(sections, output, write_examples=True):
+def create_table(sections, output, write_examples=True, example_size='8cm', symbols_sort_key=lambda x:x.symbol.lower()):
     
     with latex_fragment(output) as fragment:
-        with fragment.longtable(['c', 'l', 'l']) as table:
+        with fragment.longtable(['l', 'l', 'l']) as table:
             
-            table.row_tex('Symbol', '\\TeX command', 'description')
-            table.hline()
-            table.hline() 
+            # table.row_tex('Symbol', '\\TeX command', 'description')
+            # table.hline()
+            # table.hline() 
                 
             for section in sections:
                 table.row_tex('', '', '')
                 
                 with table.row() as row:
-                    row.cell_tex(latex_escape(section.name))
+                    row.cell_tex(raw_appearance(latex_escape(section.name)))
+                    row.multicolumn_tex(2, 'l', emph(section.description))
+                
+                table.hline()
+                if section.parent is None: 
+                    table.hline()
+                    
+                symbols = [v for k, v in section.symbols.items()] #@UnusedVariable
+                symbols.sort(key=symbols_sort_key)
+                for s in symbols:
+                    write_symbol_rows(s, table, write_examples=write_examples, example_size=example_size)
+ 
+
+
+def create_table_minimal(sections, output, symbols_sort_key=lambda x:x.symbol.lower()):
+    with latex_fragment(output) as fragment:
+        with fragment.longtable(['c', 'l']) as table:
+                            
+            for section in sections:
+                with table.row() as row:
                     row.multicolumn_tex(2, 'l', section.description)
                 
                 table.hline()
@@ -59,36 +84,80 @@ def create_table(sections, output, write_examples=True):
                     table.hline()
                     
                 symbols = [v for k, v in section.symbols.items()] #@UnusedVariable
-                symbols.sort(key=lambda v:v.symbol.lower())
+                symbols.sort(key=symbols_sort_key)
                 for s in symbols:
-                    write_symbol_rows(s, table, write_examples)
-                    
-                    
- 
+                    if s.nargs != 0:  # do not write out thes
+                        continue
+    
+                    with table.row() as row:
+                        row.cell_tex('$%s$' % s.symbol)
+                        row.cell_tex(s.desc) 
+            
+
 
 def main():
-    sections = {}
-    symbols = {} 
-    for cmd in parse_symbols(sys.stdin, 'stdin', sections, symbols): #@UnusedVariable
-        pass
+    parser = OptionParser()
+    
+    parser.add_option("--sort_sections_alpha", help="Sort sections alphabetically", default=False, action='store_true')
 
-    sys.stderr.write('Loaded %d sections with %d symbols.\n' % (len(sections),
-                                                             len(symbols)))
-    if not sections or not symbols:
-        sys.stderr.write('Not enough data found.\n')
+    parser.add_option("--sort_symbols_alpha", help="Sort symbols alphabetically", default=False, action='store_true')
+    
+    parser.add_option("--style", help="Type of table", default='full')
+    
+    # TODO: flat option
+            
+    (options, args) = parser.parse_args() #@UnusedVariable
+    
+    try:
+        # Parse stdin
+        # TODO: load from files
+        sections = {}
+        symbols = {} 
+        for cmd in parse_symbols(sys.stdin, 'stdin', sections, symbols): #@UnusedVariable
+            pass
+
+        sys.stderr.write('Loaded %d sections with %d symbols.\n' % (len(sections),
+                                                                 len(symbols)))
+        if not sections or not symbols:
+            raise Exception('Not enough data found.\n')
+        
+        which = args
+        if which:
+            selected = dict([(k, v) for (k, v) in sections.items() if k in which])
+        else:
+            selected = sections
+            
+        if not selected:
+            raise Exception('No sections selected (which: %r)' % which)
+        
+        ordered = [v for k, v in selected.items()]
+        if options.sort_sections_alpha:
+            key = lambda v:v.name
+        else:
+            key = lambda v:v.definition_order
+        ordered.sort(key=key)
+    
+        if options.sort_symbols_alpha:
+            key = lambda v:v.symbol.lower
+        else:
+            key = lambda v:v.definition_order
+        
+        def full():
+            create_table(ordered, sys.stdout, write_examples=True, symbols_sort_key=key) 
+    
+        def minimal():
+            create_table_minimal(ordered, sys.stdout, symbols_sort_key=key) 
+    
+        styles = {'minimal': minimal, 'full': full}
+        if options.style not in styles:
+            raise Exception('No known style %r. Valid options: %s.' % (options.style, styles.keys()))
+        styles[options.style]()
+            
+    except Exception as e:
+        sys.stderr.write(str(e))
+        sys.stderr.write('\n')
         sys.exit(-1)
-        
-    which = sys.argv[1:]
-    if which:
-        selected = dict([(k, v) for (k, v) in sections.items() if k in which])
-    else:
-        selected = sections
-        
-    ordered = [v for k, v in selected.items()]
-    ordered.sort(key=lambda v:v.name)
-    create_table(ordered, sys.stdout, write_examples=True) 
-    
-    
+
 if __name__ == '__main__':
     main()
 

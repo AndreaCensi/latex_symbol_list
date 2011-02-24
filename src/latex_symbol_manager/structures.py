@@ -5,7 +5,7 @@ NewCommand = namedtuple('NewCommand', 'command nargs body comment where')
 SpecialComment = namedtuple('SpecialComment', 'tag lines where')
 OtherLine = namedtuple('OtherLine', 'line where')
 
-SymbolSection = namedtuple('SymbolSection', 'name description symbols parent subs where')
+SymbolSection = namedtuple('SymbolSection', 'name description symbols parent subs where definition_order')
  
  
 class Where:
