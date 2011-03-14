@@ -6,6 +6,16 @@ from latex_symbol_manager.symbol import Symbol
 
 from optparse import OptionParser
 
+def parse_all(args):
+    if not args:
+        for x in parse_symbols(sys.stdin, 'stdin'):
+            yield x
+    else:
+        for filename in args:
+            with open(filename) as f:
+                for x in parse_symbols(f, filename):
+                    yield x
+                    
 def main(): 
     
     parser = OptionParser()
@@ -14,8 +24,7 @@ def main():
             
     (options, args) = parser.parse_args() #@UnusedVariable
 
-
-    for el in parse_symbols(sys.stdin, 'stdin'): #@UnusedVariable
+    for el in parse_all(args):
         if isinstance(el, OtherLine):
             sys.stdout.write(el.line)
             sys.stdout.write('\n')

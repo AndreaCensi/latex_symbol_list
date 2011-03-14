@@ -1,15 +1,12 @@
 import sys
 
-from latex_gen import (color_rgb, small, verbatim_soft,
-    fbox, hspace, minipage, latex_escape, texttt, emph)
-
-from .parsing_structure import parse_symbols
-from latex_gen import latex_fragment
-
 from optparse import OptionParser
 
 
+from latex_gen import (color_rgb, small, verbatim_soft,
+    fbox, hspace, minipage, latex_escape, texttt, emph, latex_fragment)
 
+from .parsing_structure import parse_symbols
 
 
 def raw_appearance(s):
@@ -93,7 +90,19 @@ def create_table_minimal(sections, output, symbols_sort_key=lambda x:x.symbol.lo
                         row.cell_tex('$%s$' % s.symbol)
                         row.cell_tex(s.desc) 
             
+def parse_all(args):
+    sections = {}
+    symbols = {} 
 
+    if not args:
+        for x in parse_symbols(sys.stdin, 'stdin', sections, symbols):
+            pass
+    else:
+        for filename in args:
+            with open(filename) as f:
+                for x in parse_symbols(f, filename, sections, symbols):
+                    pass
+    return sections, symbols
 
 def main():
     parser = OptionParser()
@@ -111,17 +120,19 @@ def main():
     try:
         # Parse stdin
         # TODO: load from files
-        sections = {}
-        symbols = {} 
-        for cmd in parse_symbols(sys.stdin, 'stdin', sections, symbols): #@UnusedVariable
-            pass
+        # for cmd # in parse_symbols(sys.stdin, 'stdin', sections, symbols): #@UnusedVariable
+        #             pass
+            
+        sections, symbols = parse_all(args)
+        
 
         sys.stderr.write('Loaded %d sections with %d symbols.\n' % (len(sections),
                                                                  len(symbols)))
         if not sections or not symbols:
-            raise Exception('Not enough data found.\n')
+            raise Exception('Not enough data found.')
         
-        which = args
+        # which = args
+        which = None #XXX add switch
         if which:
             selected = dict([(k, v) for (k, v) in sections.items() if k in which])
         else:
