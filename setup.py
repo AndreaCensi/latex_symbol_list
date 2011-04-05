@@ -14,7 +14,7 @@ setup(name='LatexSymbolManager',
            'lsm_symbols = latex_symbol_manager.compact_all:main',
            ]
         },
-        install_requires=['latex_gen'],
+        install_requires=['LaTeXGen'],
         extras_require={},
 )
 
