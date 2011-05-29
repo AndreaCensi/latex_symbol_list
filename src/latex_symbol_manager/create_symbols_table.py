@@ -4,13 +4,13 @@ from optparse import OptionParser
 
 
 from latex_gen import (color_rgb, small, verbatim_soft,
-    fbox, hspace, minipage, latex_escape, texttt, emph, latex_fragment)
+    latex_escape, texttt, emph, latex_fragment)
 
 from .parsing_structure import parse_symbols
 
 
 def raw_appearance(s):
-    return color_rgb(texttt(s), [0.5,0.5,0.5])
+    return color_rgb(texttt(s), [0.5, 0.5, 0.5])
 
 def write_symbol_rows(s, table, write_examples, example_size):
     if s.nargs == 0:
@@ -41,7 +41,8 @@ def write_symbol_rows(s, table, write_examples, example_size):
                         mp.parbreak()
                         mp.tex(small(verbatim_soft(s.example)))
             
-def create_table(sections, output, write_examples=True, example_size='8cm', symbols_sort_key=lambda x:x.symbol.lower()):
+def create_table(sections, output, write_examples=True, example_size='8cm',
+                 symbols_sort_key=lambda x:x.symbol.lower()):
     
     with latex_fragment(output) as fragment:
         with fragment.longtable(['l', 'l', 'l']) as table:
@@ -68,7 +69,8 @@ def create_table(sections, output, write_examples=True, example_size='8cm', symb
  
 
 
-def create_table_minimal(sections, output, symbols_sort_key=lambda x:x.symbol.lower()):
+def create_table_minimal(sections, output,
+                         symbols_sort_key=lambda x:x.symbol.lower()):
     with latex_fragment(output) as fragment:
         with fragment.longtable(['c', 'l']) as table:
                             
@@ -95,21 +97,25 @@ def parse_all(args):
     symbols = {} 
 
     if not args:
-        for x in parse_symbols(sys.stdin, 'stdin', sections, symbols):
+        for x in parse_symbols(sys.stdin, 'stdin', sections, symbols): #@UnusedVariable
             pass
     else:
         for filename in args:
             with open(filename) as f:
-                for x in parse_symbols(f, filename, sections, symbols):
+                for x in parse_symbols(f, filename, sections, symbols): #@UnusedVariable
                     pass
     return sections, symbols
 
 def main():
     parser = OptionParser()
     
-    parser.add_option("--sort_sections_alpha", help="Sort sections alphabetically", default=False, action='store_true')
+    parser.add_option("--sort_sections_alpha",
+                      help="Sort sections alphabetically",
+                      default=False, action='store_true')
 
-    parser.add_option("--sort_symbols_alpha", help="Sort symbols alphabetically", default=False, action='store_true')
+    parser.add_option("--sort_symbols_alpha",
+                      help="Sort symbols alphabetically",
+                      default=False, action='store_true')
     
     parser.add_option("--style", help="Type of table", default='full')
     
@@ -154,14 +160,17 @@ def main():
             key = lambda v:v.definition_order
         
         def full():
-            create_table(ordered, sys.stdout, write_examples=True, symbols_sort_key=key) 
+            create_table(ordered, sys.stdout,
+                         write_examples=True, symbols_sort_key=key) 
     
         def minimal():
             create_table_minimal(ordered, sys.stdout, symbols_sort_key=key) 
     
         styles = {'minimal': minimal, 'full': full}
         if options.style not in styles:
-            raise Exception('No known style %r. Valid options: %s.' % (options.style, styles.keys()))
+            msg = ('No known style %r. Valid options: %s.' % 
+                   (options.style, styles.keys()))
+            raise Exception(msg)
         styles[options.style]()
             
     except Exception as e:

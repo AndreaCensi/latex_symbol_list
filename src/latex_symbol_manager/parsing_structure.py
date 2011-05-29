@@ -1,10 +1,9 @@
-from collections import namedtuple
-from .parsing import parse_stream
 import sys
+ 
+from .parsing import parse_stream
 from .lookahead import Lookahead
-from .structures import NewCommand, OtherLine, \
-    SpecialComment, SymbolSection, ParsingError
-
+from .structures import (NewCommand, OtherLine, SpecialComment, SymbolSection,
+                         ParsingError)
 from .symbol import Symbol
 
 def parse_symbols(stream, filename, sections=None, symbols=None):
@@ -69,7 +68,7 @@ def parse_symbols(stream, filename, sections=None, symbols=None):
                 raise ParsingError(err, el.where)
                 
             definition_order = len(symbols)
-            s = Symbol(el.command, definition_order=definition_order, 
+            s = Symbol(el.command, definition_order=definition_order,
                         tex=el.body, desc=el.comment, tag=tag,
                        long=None, example=example, nargs=el.nargs, where=el.where)
             symbols[el.command] = s 
