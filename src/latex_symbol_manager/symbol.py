@@ -23,10 +23,14 @@ class Symbol(yaml.YAMLObject):
         tex = wrapper(self.tex)
         
         def single_def(cmd):
+
             if self.nargs:
-                s = '\\newcommand{%s}[%s]{%s}' % (cmd, self.nargs, tex)
+                params = '{%s}[%s]{%s}' % (cmd, self.nargs, tex)
             else:    
-                s = '\\newcommand{%s}{%s}' % (cmd, tex)
+                params =  '{%s}{%s}' % (cmd, tex)
+                
+            s = ('\\ifdefined%s%%\n  \\renewcommand%s%%\n\\else%%\n  \\newcommand%s%%\n\\fi\n' %
+                (cmd, params, params))
             return s
 
         if isinstance(self.symbol, list):
