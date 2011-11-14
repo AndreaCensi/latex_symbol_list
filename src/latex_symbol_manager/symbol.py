@@ -19,8 +19,11 @@ class Symbol(yaml.YAMLObject):
         return ('Symbol(%r, %r, %r, %r, %r)' % 
             (self.symbol, self.tex, self.tag, self.nargs, self.example))
         
-    def tex_definition(self, wrapper=lambda x:x):
-        tex = wrapper(self.tex)
+    def tex_definition(self, wrapper=None):
+        if wrapper is None:
+            tex = self.tex
+        else:
+            tex = wrapper(self.tex)
         
         def single_def(cmd):
 

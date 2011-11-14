@@ -1,10 +1,10 @@
 from latex_symbol_manager.parsing_structure import parse_symbols
-import sys
-from latex_symbol_manager.structures import OtherLine, ParsingError, \
-    SymbolSection
+from latex_symbol_manager.structures import (OtherLine, ParsingError,
+    SymbolSection)
 from latex_symbol_manager.symbol import Symbol
-
 from optparse import OptionParser
+import sys
+
 
 def parse_all(args):
     if not args:
@@ -20,7 +20,8 @@ def main():
     
     parser = OptionParser()
     
-    parser.add_option("--highlight", help="Highlight use of known symbols", default=False, action='store_true')
+    parser.add_option("--highlight", help="Highlight use of known symbols",
+                        default=False, action='store_true')
             
     (options, args) = parser.parse_args() #@UnusedVariable
 

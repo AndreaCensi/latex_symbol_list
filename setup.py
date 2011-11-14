@@ -12,6 +12,7 @@ setup(name='LatexSymbolManager',
            'lsm_test2 = latex_symbol_manager.parsing_structure:main',
            'lsm_table = latex_symbol_manager.create_symbols_table:main',
            'lsm_symbols = latex_symbol_manager.compact_all:main',
+           'lsm_select = latex_symbol_manager.programs.select_subset:main',
            ]
         },
         install_requires=['LaTeXGen'],
