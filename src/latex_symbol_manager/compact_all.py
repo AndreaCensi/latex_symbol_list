@@ -1,31 +1,18 @@
-from latex_symbol_manager.parsing_structure import parse_symbols
-from latex_symbol_manager.structures import (OtherLine, ParsingError,
-    SymbolSection)
-from latex_symbol_manager.symbol import Symbol
+from . import OtherLine, ParsingError, SymbolSection, Symbol, parse_all_symbols
 from optparse import OptionParser
 import sys
 
 
-def parse_all(args):
-    if not args:
-        for x in parse_symbols(sys.stdin, 'stdin'):
-            yield x
-    else:
-        for filename in args:
-            with open(filename) as f:
-                for x in parse_symbols(f, filename):
-                    yield x
-                    
-def main(): 
-    
+def main():
+
     parser = OptionParser()
-    
+
     parser.add_option("--highlight", help="Highlight use of known symbols",
                         default=False, action='store_true')
-            
+
     (options, args) = parser.parse_args() #@UnusedVariable
 
-    for el in parse_all(args):
+    for el in parse_all_symbols(args):
         if isinstance(el, OtherLine):
             sys.stdout.write(el.line)
             sys.stdout.write('\n')
@@ -41,8 +28,8 @@ def main():
             pass
         else:
             raise ParsingError('Unknown element: {0}'.format(el), el.where)
-            assert False 
-    
+            assert False
+
 if __name__ == '__main__':
     main()
 

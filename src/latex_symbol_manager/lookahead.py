@@ -1,13 +1,15 @@
 
+
 class Lookahead:
-    def __init__(self, iter):
-        self.iter = iter
+
+    def __init__(self, iterator):
+        self.iter = iterator
         self.buffer = []
 
     def __iter__(self):
         return self
 
-    def next(self):
+    def next(self): #@ReservedAssignment
         if self.buffer:
             return self.buffer.pop(0)
         else:
