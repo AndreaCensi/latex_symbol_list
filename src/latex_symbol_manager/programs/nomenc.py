@@ -40,6 +40,11 @@ def main():
 
 def print_nomenclature(symbols, stream, skip_empty=True):
     for symbol in symbols.values():
+        if 'nomenc-exclude' in symbol.other:
+            stream.write('%% Skipping symbol %s because of '
+                         'nomenc-exclude\n' % symbol)
+            continue
+
         if symbol.nomenclature is None:
             if skip_empty:
                 stream.write('%% Skipping symbol %s\n' % symbol)
@@ -59,12 +64,12 @@ def print_nomenclature(symbols, stream, skip_empty=True):
 
         ref = symbol.other.get('def', None)
         if ref:
-            text += ' (\\ref{%s})' % ref
+            text += ' \\nomencref{%s}' % ref
 
         if not 'sort' in symbol.other:
             sort_options = ''
         else:
-            sort_options = '[%s]' % symbol.other['sort']
+            sort_options = '[a%s]' % symbol.other['sort']
 
         s = r'\nomenclature%s{%s}{%s}' % (sort_options, label, text)
         stream.write(s)
