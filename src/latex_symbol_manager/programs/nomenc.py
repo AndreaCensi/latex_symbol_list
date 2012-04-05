@@ -1,15 +1,16 @@
 from .. import logger, parse_all_sections_symbols
+from ..utils import wrap_script_entry_point
 from optparse import OptionParser
 import sys
 import yaml
 
 
-def main():
+def nomenc_main(args):
     parser = OptionParser()
     parser.add_option("--only", help="YAML file containing the symbols"
                       "that must be included.")
 
-    (options, args) = parser.parse_args() #@UnusedVariable
+    (options, args) = parser.parse_args(args) #@UnusedVariable
 
     sections, symbols = parse_all_sections_symbols(args)
     logger.info('Loaded %d sections with %d symbols.\n' %
@@ -39,20 +40,25 @@ def main():
 
 
 def print_nomenclature(symbols, stream, skip_empty=True):
+    def warn(s):
+        stream.write('%% %s\n' % s)
+        logger.warn(s)
+
     for symbol in symbols.values():
         if 'nomenc-exclude' in symbol.other:
-            stream.write('%% Skipping symbol %s because of '
-                         'nomenc-exclude\n' % symbol)
+            warn('Skipping symbol %s because of '
+                         'nomenc-exclude' % symbol.symbol)
             continue
 
         if symbol.nomenclature is None:
             if skip_empty:
-                stream.write('%% Skipping symbol %s\n' % symbol)
+                warn('Skipping symbol %s because of skip_empty.' %
+                     symbol.symbol)
                 continue
 
             if symbol.nargs != 0:
-                stream.write('%% Skipping symbol %s because it has args\n'
-                              % symbol)
+                warn('Skipping symbol %s because it has args.' %
+                     symbol.symbol)
                 continue
 
             text = symbol.desc
@@ -66,15 +72,24 @@ def print_nomenclature(symbols, stream, skip_empty=True):
         if ref:
             text += ' \\nomencref{%s}' % ref
 
+        ADDPREFIX = 'symbols'
         if not 'sort' in symbol.other:
-            sort_options = ''
+            sort_options = '[%s]' % (ADDPREFIX)
         else:
-            sort_options = '[a%s]' % symbol.other['sort']
+            sort_options = '[%s%s]' % (ADDPREFIX, symbol.other['sort'])
 
+        text = text.strip()
+        if not text:
+            warn('No text for %s' % symbol.symbol)
+            text = '\\texttt{%s}' % symbol.symbol[1:]
         s = r'\nomenclature%s{%s}{%s}' % (sort_options, label, text)
+
         stream.write(s)
         stream.write('\n')
 
+
+def main():
+    wrap_script_entry_point(nomenc_main, logger)
+
 if __name__ == '__main__':
     main()
-

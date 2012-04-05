@@ -1,5 +1,5 @@
 from . import (NewCommand, OtherLine, SpecialComment, SymbolSection,
-    ParsingError, Lookahead, NomenclatureEntry, Symbol, parse_stream)
+    logger, ParsingError, Lookahead, NomenclatureEntry, Symbol, parse_stream)
 import sys
 
 
@@ -68,6 +68,7 @@ def parse_symbols(stream, filename, sections=None, symbols=None):
                     label, text = content.split(':')
                     nomenc = NomenclatureEntry(label, text)
                 else:
+                    logger.info('found extra %s' % sc.tag)
                     # xxx: check not already
                     other[sc.tag] = " ".join(sc.lines).strip()
 #                    msg = 'Unknown tag %r' % sc.tag
