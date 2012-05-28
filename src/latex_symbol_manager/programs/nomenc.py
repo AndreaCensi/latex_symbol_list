@@ -9,6 +9,8 @@ def nomenc_main(args):
     parser = OptionParser()
     parser.add_option("--only", help="YAML file containing the symbols"
                       "that must be included.")
+    parser.add_option("-v", "--verbose",
+                      default=False, action='store_true')
 
     (options, args) = parser.parse_args(args) #@UnusedVariable
 
@@ -26,10 +28,11 @@ def nomenc_main(args):
         used = set(only)
         have_but_not_used = have.difference(used)
         used_but_not_have = used.difference(have)
-        logger.info('have: %s' % have)
-        logger.info('used: %s' % used)
-        logger.info('have_but_not_used: %s' % have_but_not_used)
-        logger.info('used_but_not_have: %s' % used_but_not_have)
+        if options.verbose:
+            logger.info('have: %s' % have)
+            logger.info('used: %s' % used)
+            logger.info('have_but_not_used: %s' % have_but_not_used)
+            logger.info('used_but_not_have: %s' % used_but_not_have)
         have_and_used = have.intersection(used)
         symbols = dict((k, v) for k, v in symbols.items()
                        if k in have_and_used)
@@ -40,14 +43,15 @@ def nomenc_main(args):
 
 
 def print_nomenclature(symbols, stream, skip_empty=True):
-    def warn(s):
+    def warn(s, also_log=True):
         stream.write('%% %s\n' % s)
-        logger.warn(s)
+        if also_log:
+            logger.warn(s)
 
     for symbol in symbols.values():
         if 'nomenc-exclude' in symbol.other:
             warn('Skipping symbol %s because of '
-                         'nomenc-exclude' % symbol.symbol)
+                 'nomenc-exclude' % symbol.symbol, False)
             continue
 
         if symbol.nomenclature is None:
@@ -58,7 +62,7 @@ def print_nomenclature(symbols, stream, skip_empty=True):
 
             if symbol.nargs != 0:
                 warn('Skipping symbol %s because it has args.' %
-                     symbol.symbol)
+                     symbol.symbol, False)
                 continue
 
             text = symbol.desc
@@ -70,6 +74,12 @@ def print_nomenclature(symbols, stream, skip_empty=True):
 
         ref = symbol.other.get('def', None)
         if ref:
+            if not ':' in ref:
+                msg = ('While considering symbol %s: '
+                       'Could not find a prefix for reference %r '
+                       'so aborting because prettyref might get confused '
+                       'in a way which is not debuggable' % (symbol, ref))
+                raise Exception(msg)
             text += ' \\nomencref{%s}' % ref
 
         ADDPREFIX = 'symbols'

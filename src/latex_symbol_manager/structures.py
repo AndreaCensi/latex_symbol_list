@@ -6,7 +6,8 @@ SpecialComment = namedtuple('SpecialComment', 'tag lines where')
 OtherLine = namedtuple('OtherLine', 'line where')
 
 SymbolSection = namedtuple('SymbolSection',
-                'name description symbols parent subs where definition_order')
+                'name description symbols parent subs where '
+                'definition_order attrs')
 
 
 class Where:

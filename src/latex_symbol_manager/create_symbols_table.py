@@ -1,12 +1,8 @@
-import sys
-
-from optparse import OptionParser
-
-
-from latex_gen import (color_rgb, small, verbatim_soft,
-    latex_escape, texttt, emph, latex_fragment)
-
 from . import parse_all_sections_symbols
+from latex_gen import (color_rgb, small, verbatim_soft, latex_escape, texttt,
+    emph, latex_fragment)
+from optparse import OptionParser
+import sys
 
 
 def raw_appearance(s):
@@ -44,7 +40,7 @@ def write_symbol_rows(s, table, write_examples, example_size):
 
 
 def create_table(sections, output, write_examples=True, example_size='8cm',
-                 symbols_sort_key=lambda x:x.symbol.lower()):
+                 symbols_sort_key=lambda x: x.symbol.lower()):
 
     with latex_fragment(output) as fragment:
         with fragment.longtable(['l', 'l', 'l']) as table:
@@ -64,15 +60,16 @@ def create_table(sections, output, write_examples=True, example_size='8cm',
                 if section.parent is None:
                     table.hline()
 
-                symbols = [v for k, v in section.symbols.items()] #@UnusedVariable
+                symbols = [v for _, v in section.symbols.items()]
                 symbols.sort(key=symbols_sort_key)
                 for s in symbols:
-                    write_symbol_rows(s, table, write_examples=write_examples, example_size=example_size)
-
+                    write_symbol_rows(s, table,
+                                      write_examples=write_examples,
+                                      example_size=example_size)
 
 
 def create_table_minimal(sections, output,
-                         symbols_sort_key=lambda x:x.symbol.lower()):
+                         symbols_sort_key=lambda x: x.symbol.lower()):
     with latex_fragment(output) as fragment:
         with fragment.longtable(['c', 'l']) as table:
 
@@ -84,7 +81,7 @@ def create_table_minimal(sections, output,
                 if section.parent is None:
                     table.hline()
 
-                symbols = [v for k, v in section.symbols.items()] #@UnusedVariable
+                symbols = [v for _, v in section.symbols.items()]
                 symbols.sort(key=symbols_sort_key)
                 for s in symbols:
                     if s.nargs != 0:  # do not write out thes
@@ -93,6 +90,7 @@ def create_table_minimal(sections, output,
                     with table.row() as row:
                         row.cell_tex('$%s$' % s.symbol)
                         row.cell_tex(s.desc)
+
 
 def main():
     parser = OptionParser()
@@ -114,16 +112,16 @@ def main():
     try:
         sections, symbols = parse_all_sections_symbols(args)
 
-
-        sys.stderr.write('Loaded %d sections with %d symbols.\n' % (len(sections),
-                                                                 len(symbols)))
+        sys.stderr.write('Loaded %d sections with %d symbols.\n' %
+                         (len(sections), len(symbols)))
         if not sections or not symbols:
             raise Exception('Not enough data found.')
 
         # which = args
         which = None #XXX add switch
         if which:
-            selected = dict([(k, v) for (k, v) in sections.items() if k in which])
+            selected = dict([(k, v)
+                             for (k, v) in sections.items() if k in which])
         else:
             selected = sections
 
@@ -132,15 +130,15 @@ def main():
 
         ordered = [v for k, v in selected.items()]
         if options.sort_sections_alpha:
-            key = lambda v:v.name
+            key = lambda v: v.name
         else:
-            key = lambda v:v.definition_order
+            key = lambda v: v.definition_order
         ordered.sort(key=key)
 
         if options.sort_symbols_alpha:
-            key = lambda v:v.symbol.lower
+            key = lambda v: v.symbol.lower
         else:
-            key = lambda v:v.definition_order
+            key = lambda v: v.definition_order
 
         def full():
             create_table(ordered, sys.stdout,

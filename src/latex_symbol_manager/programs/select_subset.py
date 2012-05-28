@@ -64,9 +64,12 @@ def main():
 
     for section in selected:
         wrapper = None
-        if section in color_green: wrapper = wrap_green
-        if section in color_blue: wrapper = wrap_blue
-        if section in color_red: wrapper = wrap_red
+        if section in color_green:
+            wrapper = wrap_green
+        if section in color_blue:
+            wrapper = wrap_blue
+        if section in color_red:
+            wrapper = wrap_red
 
         for symbol in section.symbols.values():
             f.write(symbol.tex_definition(wrapper=wrapper))

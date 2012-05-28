@@ -17,8 +17,13 @@ def main():
             sys.stdout.write(el.line)
             sys.stdout.write('\n')
         elif isinstance(el, Symbol):
-            if options.highlight and el.nargs == 0:
-                wrapper = lambda x: "{\\color[rgb]{0,0.5,0} %s}" % x
+            if options.highlight:
+                if el.nargs == 0:
+                    wrapper = lambda x: "{\\color[rgb]{0,0.5,0} %s}" % x
+                elif 'deprecated' in el.other:
+                    wrapper = lambda x: "{\\color[rgb]{1,0,0} %s}" % x
+                else:
+                    wrapper = lambda x: x
             else:
                 wrapper = lambda x: x
 
