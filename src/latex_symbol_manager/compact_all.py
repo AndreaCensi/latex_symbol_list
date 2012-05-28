@@ -20,12 +20,13 @@ def main():
             if options.highlight:
                 if el.nargs == 0:
                     wrapper = lambda x: "{\\color[rgb]{0,0.5,0} %s}" % x
-                elif 'deprecated' in el.other:
-                    wrapper = lambda x: "{\\color[rgb]{1,0,0} %s}" % x
                 else:
                     wrapper = lambda x: x
             else:
                 wrapper = lambda x: x
+
+            if 'deprecated' in el.other and el.nargs == 0:
+                wrapper = lambda x: "{\\color[rgb]{1,0,0} %s}" % x
 
             sys.stdout.write(el.tex_definition(wrapper=wrapper))
             sys.stdout.write('\n')
