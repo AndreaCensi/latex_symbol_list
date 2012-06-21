@@ -13,7 +13,10 @@ def write_symbol_rows(s, table, write_examples, example_size):
     if s.nargs == 0:
         with table.row() as row:
             row.cell_tex(raw_appearance(latex_escape(s.symbol)))
-            row.cell_tex('$%s$' % s.symbol)
+            if not 'nosummary' in s.other:
+                row.cell_tex('$%s$' % s.symbol)
+            else:
+                row.cell_tex('(nosummary)')
             row.cell_tex(s.desc)
     else:
         args = ",".join(['...'] * s.nargs)

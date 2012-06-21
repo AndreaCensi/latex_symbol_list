@@ -1,5 +1,11 @@
 from collections import namedtuple
 
+
+KNOWN_TAGS_SYMBOLS = ['def', 'nomenc', 'nomenc-exclude', 'nosummary',
+                      'sort', 'notfinal', 'deprecated', 'example', 'todo']
+KNOWN_TAGS_SECTIONS = ['nomenc-exclude', 'notfinal', 'deprecated']
+
+
 # These are the possible results of parsing a tex file
 NewCommand = namedtuple('NewCommand', 'command nargs body comment where')
 SpecialComment = namedtuple('SpecialComment', 'tag lines where')

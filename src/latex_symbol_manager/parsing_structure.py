@@ -1,5 +1,6 @@
-from . import (NewCommand, OtherLine, SpecialComment, SymbolSection,
-    logger, ParsingError, Lookahead, NomenclatureEntry, Symbol, parse_stream)
+from . import (NewCommand, OtherLine, SpecialComment, SymbolSection, logger,
+    ParsingError, Lookahead, NomenclatureEntry, Symbol, parse_stream,
+    KNOWN_TAGS_SYMBOLS, KNOWN_TAGS_SECTIONS)
 import sys
 
 
@@ -58,7 +59,9 @@ def create_section(el, peek, sections, name, description):
     if '/' in name:
         parent = name.split('/')[0].strip()
         if not parent in sections:
-            warning('Creating dummy parent section %r. ' % parent, el)
+            if False: # tmp disable
+                warning('Creating dummy parent section %r.\n '
+                    'Already know %s.' % (parent, sections.keys()), el)
             create_section(el, None, sections, parent, '')
     else:
         parent = None
@@ -89,8 +92,15 @@ def load_command(peek, el, current_section, symbols):
 
     other = load_attributes(peek, KNOWN_TAGS_SYMBOLS)
 
+    if 'todo' in other:
+        logger.warn('TODO (%s): %s' % (el.command, other['todo']))
+
     if 'nomenc' in other:
-        label, text = other['nomenc'].split(':')
+        parts = other['nomenc'].split(':')
+        if len(parts) !=2:
+            err = 'Too many elements in %r' % other['nomenc']
+            raise ParsingError(err, el.where)
+        label, text = parts
         nomenc = NomenclatureEntry(label, text)
     else:
         nomenc = None
@@ -107,9 +117,10 @@ def load_command(peek, el, current_section, symbols):
     # merge attributes from section
     for k, v in  current_section.attrs.items():
         if k in other and other[k] != v:
-            warning('Overwriting tag %r = %r with section value (%r)'
+            warning('Note: tag %r = %r disagrees with section (%r)'
                     % (k, other[k], v), el)
-        other[k] = v
+        else:
+            other[k] = v
 
     definition_order = len(symbols)
     s = Symbol(el.command, definition_order=definition_order,
@@ -120,11 +131,6 @@ def load_command(peek, el, current_section, symbols):
     symbols[el.command] = s
     current_section.symbols[el.command] = s
     return s
-
-
-KNOWN_TAGS_SYMBOLS = ['def', 'nomenc', 'nomenc-exclude',
-              'sort', 'notfinal', 'deprecated', 'example']
-KNOWN_TAGS_SECTIONS = ['nomenc-exclude', 'notfinal', 'deprecated']
 
 
 def load_attributes(peek, known, stop_on=['section']):

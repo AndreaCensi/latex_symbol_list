@@ -1,4 +1,4 @@
-from . import logger, parse_symbols
+from . import  parse_symbols
 import sys
 
 
@@ -18,12 +18,12 @@ def parse_all_sections_symbols(args):
     symbols = {}
 
     if not args:
-        logger.info('Parsing from stdin...')
+        #logger.debug('Parsing from stdin...')
         for _ in parse_symbols(sys.stdin, 'stdin', sections, symbols):
             pass
     else:
         for filename in args:
-            logger.info('Parsing %s' % filename)
+            #logger.debug('Parsing %s' % filename)
             with open(filename) as f:
                 for _ in parse_symbols(f, filename, sections, symbols):
                     pass

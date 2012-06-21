@@ -49,6 +49,7 @@ def print_nomenclature(symbols, stream, skip_empty=True):
             logger.warn(s)
 
     for symbol in symbols.values():
+        symbol_name = symbol.symbol[1:]
         if 'nomenc-exclude' in symbol.other:
             warn('Skipping symbol %s because of '
                  'nomenc-exclude' % symbol.symbol, False)
@@ -69,10 +70,11 @@ def print_nomenclature(symbols, stream, skip_empty=True):
             label = '$%s$' % symbol.symbol
         else:
             text = symbol.nomenclature.text
-            label = symbol.nomenclature.label
-            label = '$%s$' % label
+            label = '$%s$' % symbol.nomenclature.label
 
-        ref = symbol.other.get('def', None)
+        label = '\\nomencLabel{%s}{%s}' % (symbol_name, label)
+
+        ref = symbol.other.get('def', '')
         if ref:
             if not ':' in ref:
                 msg = ('While considering symbol %s: '
@@ -91,7 +93,9 @@ def print_nomenclature(symbols, stream, skip_empty=True):
         text = text.strip()
         if not text:
             warn('No text for %s' % symbol.symbol)
-            text = '\\texttt{%s}' % symbol.symbol[1:]
+            text = '\\nomencMissExplanation{%s}' % symbol_name
+
+        text = '\\nomencText{%s}{%s}{%s}' % (symbol_name, text, ref)
         s = r'\nomenclature%s{%s}{%s}' % (sort_options, label, text)
 
         stream.write(s)
