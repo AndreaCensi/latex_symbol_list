@@ -1,9 +1,12 @@
-import sys, yaml, os, glob
-
 import logging
-logging.basicConfig()
+import sys
+import yaml
+import os
+import glob
+
 logger = logging.getLogger(__name__) # XXX
 logger.setLevel(logging.INFO)
+logging.basicConfig()
 
 class UserError(Exception):
     pass

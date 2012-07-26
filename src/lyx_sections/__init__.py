@@ -1,3 +1,4 @@
+__version__ = '1.0'
 
 from .misc_utils import *
 from .subst import *
