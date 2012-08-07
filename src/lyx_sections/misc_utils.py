@@ -1,8 +1,5 @@
 import logging
 import sys
-import yaml
-import os
-import glob
 
 logger = logging.getLogger(__name__) # XXX
 logger.setLevel(logging.INFO)

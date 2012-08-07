@@ -97,7 +97,7 @@ def load_command(peek, el, current_section, symbols):
 
     if 'nomenc' in other:
         parts = other['nomenc'].split(':')
-        if len(parts) !=2:
+        if len(parts) != 2:
             err = 'Too many elements in %r' % other['nomenc']
             raise ParsingError(err, el.where)
         label, text = parts
@@ -110,7 +110,7 @@ def load_command(peek, el, current_section, symbols):
     tag = current_section.name
 
     if el.command in symbols:
-        err = ('Already know symbol %r from %r.' %
+        err = ('Already know symbol %r from %r.' % 
                 (el.command, symbols[el.command].where))
         raise ParsingError(err, el.where)
 
@@ -143,7 +143,6 @@ def load_attributes(peek, known, stop_on=['section']):
         if sc.tag in attrs:
             warning('Overwriting tag %r.' % sc.tag, sc)
         attrs[sc.tag] = " ".join(sc.lines).strip()
-
     return attrs
 
 

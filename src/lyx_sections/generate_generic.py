@@ -1,9 +1,14 @@
-from . import *
+from . import logger
+import glob
+from lyx_sections.generate_generic_templates import inset_template, lyx_template
+from lyx_sections.subst import substitute
+from lyx_sections.misc_utils import UserError
 
-def generate(pattern,                             entry2value,
+def generate(pattern, entry2value,
                            template_main=lyx_template, 
-                           template_inset=inset_template,exclude=[]):
-    chapters = list( glob.glob(pattern) )
+                           template_inset=inset_template,
+                           exclude=[]):
+    chapters = list(glob.glob(pattern))
 
     for e in exclude:
         if e in chapters:
@@ -26,7 +31,7 @@ def create_lyx_file(chapters, entry2value, template_main, template_inset):
     """ Returns a string with the template """
     insets = ''
     for chap in chapters:
-        filename=entry2value(chap) 
+        filename = entry2value(chap) 
         inset = substitute(template_inset, filename=filename)
         insets += inset 
 

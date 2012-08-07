@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import sys
 import re
-import os
-import glob
  
 file_pattern = '*.tex'
 include_pattern = '\\input{(.*?)}'

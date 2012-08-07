@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import sys
 import re
 import os
@@ -14,7 +13,7 @@ def lyx_deps_all_main():
     roots = sys.argv[1:]
     if not roots:
         roots = list(glob.glob('*.lyx'))
-    logger.debug('roots: %r' %roots)
+    logger.debug('roots: %r' % roots)
     for lyx_file in roots:
         base = os.path.splitext(lyx_file)[0]
         deps = get_deps_recursive(lyx_file)        

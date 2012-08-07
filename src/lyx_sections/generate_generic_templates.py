@@ -1,5 +1,5 @@
 
-inset_template=r"""
+inset_template = r"""
 \begin_layout Standard
 \begin_inset CommandInset include
 LatexCommand input
@@ -12,7 +12,7 @@ filename "${filename}"
 """
 
 
-lyx_template=r"""#LyX 2.0 created this file. For more info see http://www.lyx.org/
+lyx_template = r"""#LyX 2.0 created this file. For more info see http://www.lyx.org/
 \lyxformat 413
 \begin_document
 \begin_header
