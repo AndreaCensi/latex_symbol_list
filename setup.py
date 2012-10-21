@@ -25,6 +25,7 @@ setup(name='LatexSymbolManager',
            # Summaries
            'lyx-gen-chapter = lyx_sections:generate_chapter_contents_main',
            'lyx-gen-part  = lyx_sections:generate_part_contents_main',
+           'lyx-gen  = lyx_sections:lyx_gen_main',
            ]
         },
         install_requires=['LaTeXGen', 'pyyaml'],

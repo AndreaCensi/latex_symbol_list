@@ -1,13 +1,27 @@
 from . import logger
 import glob
-from lyx_sections.generate_generic_templates import inset_template, lyx_template
+from lyx_sections.generate_generic_templates import inset_template, templates
 from lyx_sections.subst import substitute
 from lyx_sections.misc_utils import UserError
 
+
 def generate(pattern, entry2value,
-                           template_main=lyx_template, 
+                           template_main=templates['amsbook'],
                            template_inset=inset_template,
                            exclude=[]):
+
+    main = generate_index(pattern, entry2value,
+                          template_main,
+                          template_inset,
+                          exclude)
+    print(main)
+
+
+def generate_index(pattern, entry2value,
+                           template_main=templates['amsbook'],
+                           template_inset=inset_template,
+                           exclude=[],
+                           preamble=''):
     chapters = list(glob.glob(pattern))
 
     for e in exclude:
@@ -19,15 +33,16 @@ def generate(pattern, entry2value,
         raise UserError('Could not find any chapter matching %r' 
             % pattern)
 
-    logger.debug('Found %d subs. ' % len(chapters))
+    logger.info('Found %d: %s ' % (len(chapters), chapters))
 
     chapters = sorted(chapters)
-    main = create_lyx_file(chapters, entry2value, template_main, template_inset)
-    print(main)
-
+    main = create_lyx_file(chapters, entry2value, template_main, template_inset,
+                           preamble=preamble)
     logger.debug('Done.')
+    return main
 
-def create_lyx_file(chapters, entry2value, template_main, template_inset):
+def create_lyx_file(chapters, entry2value, template_main, template_inset,
+                    preamble=''):
     """ Returns a string with the template """
     insets = ''
     for chap in chapters:
@@ -35,7 +50,7 @@ def create_lyx_file(chapters, entry2value, template_main, template_inset):
         inset = substitute(template_inset, filename=filename)
         insets += inset 
 
-    main = substitute(template_main, content=insets)
+    main = substitute(template_main, content=insets, preamble=preamble)
     return main
 
 
