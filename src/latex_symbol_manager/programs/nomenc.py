@@ -15,7 +15,7 @@ def nomenc_main(args):
     (options, args) = parser.parse_args(args) #@UnusedVariable
 
     sections, symbols = parse_all_sections_symbols(args)
-    logger.info('Loaded %d sections with %d symbols.\n' %
+    logger.info('Loaded %d sections with %d symbols.\n' % 
                 (len(sections), len(symbols)))
     if not sections or not symbols:
         raise Exception('Not enough data found.')
@@ -57,12 +57,12 @@ def print_nomenclature(symbols, stream, skip_empty=True):
 
         if symbol.nomenclature is None:
             if skip_empty:
-                warn('Skipping symbol %s because of skip_empty.' %
+                warn('Skipping symbol %s because of skip_empty.' % 
                      symbol.symbol)
                 continue
 
             if symbol.nargs != 0:
-                warn('Skipping symbol %s because it has args.' %
+                warn('Skipping symbol %s because it has args.' % 
                      symbol.symbol, False)
                 continue
 
@@ -71,6 +71,12 @@ def print_nomenclature(symbols, stream, skip_empty=True):
         else:
             text = symbol.nomenclature.text
             label = '$%s$' % symbol.nomenclature.label
+
+        text = text.strip()
+        # Add period if not there
+        if text and text[-1] != '.':
+            logger.info('Adding period to %r/%r' % (label, text))
+            text += '.'
 
         label = '\\nomencLabel{%s}{%s}' % (symbol_name, label)
 
@@ -90,7 +96,8 @@ def print_nomenclature(symbols, stream, skip_empty=True):
         else:
             sort_options = '[%s%s]' % (ADDPREFIX, symbol.other['sort'])
 
-        text = text.strip()
+        
+        
         if not text:
             warn('No text for %s' % symbol.symbol)
             text = '\\nomencMissExplanation{%s}' % symbol_name
