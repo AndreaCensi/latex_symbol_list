@@ -10,11 +10,12 @@ class NomenclatureEntry(yaml.YAMLObject):
         return ('Nom(%r, %r)' % (self.label, self.text))
 
 
+
 class Symbol(yaml.YAMLObject):
     yaml_tag = u'!Symbol'
 
     def __init__(self, symbol, tex, definition_order, tag=None, desc=None,
-                 long=None, example=None, nargs=0, #@ReservedAssignment
+                 long=None, example=None, nargs=0,  # @ReservedAssignment
                   where=None, nomenclature=None, other={}):
         self.symbol = symbol
         self.tex = tex
@@ -29,9 +30,18 @@ class Symbol(yaml.YAMLObject):
         self.other = other
 
     def __repr__(self):
-        return ('Symbol(%r, %r, %r, %r, %r, %r, %r)' %
+        return ('Symbol(%r, %r, %r, %r, %r, %r, %r)' % 
             (self.symbol, self.tex, self.tag, self.nargs, self.example,
              self.nomenclature, self.other))
+
+    def tex_definition_short(self):
+        cmd = self.symbol
+        assert isinstance(cmd, str)
+        if self.nargs:
+            params = '{%s}[%s]{%s}' % (cmd, self.nargs, self.tex)
+        else:
+            params = '{%s}{%s}' % (cmd, self.tex)
+        return '\\newcommand%s' % params
 
     def tex_definition(self, wrapper=None):
         if wrapper is None:
@@ -59,3 +69,9 @@ class Symbol(yaml.YAMLObject):
             s += '%% %s' % self.desc
 
         return s
+
+    def symbol_dependencies(self):
+        """ Returns all the commands used by the definition """
+        from latex_symbol_manager.programs.collect.find_commands import find_all_commands_in_string
+        return find_all_commands_in_string(self.tex)
+    
