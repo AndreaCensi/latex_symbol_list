@@ -133,7 +133,7 @@ figs-within-sections
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman palatino
+\font_roman default
 \font_sans default
 \font_typewriter default
 \font_default_family default
