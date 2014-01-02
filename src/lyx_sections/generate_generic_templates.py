@@ -125,8 +125,6 @@ ${preamble}
 \use_default_options true
 \begin_modules
 theorems-ams
-eqs-within-sections
-figs-within-sections
 \end_modules
 \maintain_unincluded_children false
 \language english
