@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(name='LatexSymbolManager',
         author="Andrea Censi",
-        author_email="andrea@cds.caltech.edu",
+        author_email="censi@mit.edu",
         version="0.5",
         package_dir={'':'src'},
         packages=find_packages('src'),

@@ -1,8 +1,10 @@
-from . import logger
 import glob
+
 from lyx_sections.generate_generic_templates import inset_template, templates
-from lyx_sections.subst import substitute
 from lyx_sections.misc_utils import UserError
+from lyx_sections.subst import substitute
+
+from . import logger
 
 
 def generate(pattern, entry2value,
