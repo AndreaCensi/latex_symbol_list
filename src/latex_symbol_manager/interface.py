@@ -1,6 +1,10 @@
-from . import  parse_symbols
 import sys
+from .parsing_structure import parse_symbols
 
+__all__ = [
+    'parse_all_symbols',
+    'parse_all_sections_symbols',
+]
 
 def parse_all_symbols(args):
     if not args:

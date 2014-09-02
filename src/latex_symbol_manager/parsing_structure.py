@@ -85,7 +85,6 @@ def create_section(el, peek, sections, name, description):
 
 
 def load_command(peek, el, current_section, symbols):
-
     if current_section is None:
         err = 'No section defined yet'
         raise ParsingError(err, el.where)
@@ -115,8 +114,9 @@ def load_command(peek, el, current_section, symbols):
         raise ParsingError(err, el.where)
 
     # merge attributes from section
-    for k, v in  current_section.attrs.items():
-        if k in other and other[k] != v:
+    for k, v in current_section.attrs.items():
+        ok_to_disagree = ['def']
+        if k in other and other[k] != v and not k in ok_to_disagree:
             warning('Note: tag %r = %r disagrees with section (%r)'
                     % (k, other[k], v), el)
         else:

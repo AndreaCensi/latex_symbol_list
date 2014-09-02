@@ -1,8 +1,8 @@
-from . import parse_all_sections_symbols
 from latex_gen import (color_rgb, small, verbatim_soft, latex_escape, texttt,
     emph, latex_fragment)
 from optparse import OptionParser
 import sys
+from .interface import parse_all_sections_symbols
 
 
 def raw_appearance(s):

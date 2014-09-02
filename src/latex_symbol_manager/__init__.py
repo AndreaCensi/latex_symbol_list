@@ -11,3 +11,5 @@ from .parsing_structure import *
 
 from .interface import *
 from .compact_all import *
+
+from . import utils 

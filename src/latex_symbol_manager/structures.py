@@ -20,7 +20,10 @@ class Where:
     def __init__(self, filename, lineno, text=None):
         self.filename = filename
         self.lineno = lineno
+        if text and text[-1] == '\n':
+            text = text[:-1]
         self.text = text
+        
 
     def __str__(self):
         return '%s: line %4d: %s' % (self.filename, self.lineno, self.text)
