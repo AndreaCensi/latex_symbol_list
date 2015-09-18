@@ -56,8 +56,11 @@ def create_table(sections, output, write_examples=True, example_size='8cm',
                 table.row_tex('', '', '')
 
                 with table.row() as row:
-                    row.cell_tex(raw_appearance(latex_escape(section.name)))
-                    row.multicolumn_tex(2, 'l', emph(section.description))
+                    head1 = raw_appearance(latex_escape(section.name))
+                    head2 = emph(section.description)
+
+                    # row.cell_tex(head1)
+                    row.multicolumn_tex(3, 'l', head1 + ' ' + head2)
 
                 table.hline()
                 if section.parent is None:
