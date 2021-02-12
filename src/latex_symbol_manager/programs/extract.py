@@ -1,44 +1,44 @@
+from optparse import OptionParser
+
+from latex_symbol_manager.programs.collect.find_commands import find_all_commands
 from .. import logger, parse_all_sections_symbols
 from ..utils import wrap_script_entry_point
-from optparse import OptionParser
-import sys
-from latex_symbol_manager.programs.collect.find_commands import find_all_commands
 
-
-__all__ = ['lsm_extract_main']
+__all__ = ["lsm_extract_main"]
 
 usage = """
 
     %prog -m main.tex -o compact.tex  sources.tex ....
 
 """
+
+
 def lsm_extract_main():
     parser = OptionParser(usage)
     parser.add_option("-m", "--main")
     parser.add_option("-o", "--output")
     (options, args) = parser.parse_args()  # @UnusedVariable
-   
+
     main = options.main
     out = options.output
-    
+
     sources = args
-    
-    
-    f = open(out, 'w')
-    
+
+    f = open(out, "w")
+
     try:
         sections, symbols = parse_all_sections_symbols(sources)
 
-        logger.info('Loaded %d sections with %d symbols.\n' % 
-                         (len(sections), len(symbols)))
+        logger.info(
+            "Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols))
+        )
         if not sections or not symbols:
-            raise Exception('Not enough data found.')
+            raise Exception("Not enough data found.")
 
-
-        logger.info('Now looking for symbols')
+        logger.info("Now looking for symbols")
         commands = find_all_commands(main)
-        logger.info('I found %d commands' % len(commands))
-        
+        logger.info("I found %d commands" % len(commands))
+
         done = set()
         todo = set(commands)
         while todo:
@@ -46,15 +46,15 @@ def lsm_extract_main():
             if c in done:
                 continue
             done.add(c)
-            
+
             if c in symbols:
-                logger.info('Found command %r' % c)
+                logger.info("Found command %r" % c)
                 s = symbols[c]
-                f.write(s.tex_definition_short() + '\n')
-                todo.update(s.symbol_dependencies())    
+                f.write(s.tex_definition_short() + "\n")
+                todo.update(s.symbol_dependencies())
             else:
-                logger.warning('Not found %r' % c)
-           
+                logger.warning("Not found %r" % c)
+
     except:
         raise
 
@@ -62,5 +62,6 @@ def lsm_extract_main():
 def main():
     wrap_script_entry_point(lsm_extract_main, logger)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -1,8 +1,9 @@
 import re
 
 # XXX: need to exclude '_'
-command_pattern = r'(\\\w+)'
+command_pattern = r"(\\\w+)"
 command_regex = re.compile(command_pattern)
+
 
 def find_all_commands(filename):
     """ Finds all TeX commands used in the file. """

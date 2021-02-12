@@ -1,4 +1,5 @@
 import logging
+
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -12,4 +13,4 @@ from .parsing_structure import *
 from .interface import *
 from .compact_all import *
 
-from . import utils 
+from . import utils

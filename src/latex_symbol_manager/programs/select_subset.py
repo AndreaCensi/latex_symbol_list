@@ -6,28 +6,27 @@ import sys
 def main():
     parser = OptionParser()
 
-    parser.add_option("--include",
-                      help="Sections to include (comma separated)",
-                      default="all")
+    parser.add_option(
+        "--include", help="Sections to include (comma separated)", default="all"
+    )
 
     parser.add_option("--blue", default="", help="Color these in blue")
     parser.add_option("--red", default="", help="Color these in red")
     parser.add_option("--green", default="", help="Color these in green")
 
-    (options, args) = parser.parse_args() #@UnusedVariable
+    (options, args) = parser.parse_args()  # @UnusedVariable
 
     sections, symbols = parse_all_sections_symbols(args)
 
-    logger.info('Loaded %d sections with %d symbols.\n'
-                     % (len(sections), len(symbols)))
+    logger.info("Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols)))
 
     if not sections or not symbols:
-        raise Exception('Not enough data found.')
+        raise Exception("Not enough data found.")
 
     def get_sections(which):
         if not which:
             return []
-        names = which.split(',')
+        names = which.split(",")
 
         l = []
         for x in names:
@@ -36,11 +35,12 @@ def main():
                 if x in k:
                     lx.append(sections[k])
 
-            if x == 'all':
+            if x == "all":
                 lx.extend(list(sections.values()))
             if not lx:
-                raise Exception('Section %s not found in %s'
-                                % (x, list(sections.keys())))
+                raise Exception(
+                    "Section %s not found in %s" % (x, list(sections.keys()))
+                )
 
             l.extend(lx)
         return l
@@ -51,7 +51,7 @@ def main():
     color_red = get_sections(options.red)
     color_green = get_sections(options.green)
 
-    logger.info('Selected: %s' % selected)
+    logger.info("Selected: %s" % selected)
 
     wrap_red = lambda x: "{\\color[rgb]{0.5,0,0} %s}" % x
     wrap_blue = lambda x: "{\\color[rgb]{0,0,0.5} %s}" % x
@@ -60,7 +60,7 @@ def main():
     f = sys.stdout
 
     if not selected:
-        raise Exception('No sections selected (which: %r)' % options.sections)
+        raise Exception("No sections selected (which: %r)" % options.sections)
 
     for section in selected:
         wrapper = None
@@ -73,8 +73,8 @@ def main():
 
         for symbol in list(section.symbols.values()):
             f.write(symbol.tex_definition(wrapper=wrapper))
-            f.write('\n')
+            f.write("\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

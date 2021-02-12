@@ -1,7 +1,4 @@
-
-
 class Lookahead:
-
     def __init__(self, iterator):
         self.iter = iterator
         self.buffer = []
@@ -9,7 +6,7 @@ class Lookahead:
     def __iter__(self):
         return self
 
-    def __next__(self): #@ReservedAssignment
+    def __next__(self):  # @ReservedAssignment
         if self.buffer:
             return self.buffer.pop(0)
         else:
@@ -23,4 +20,3 @@ class Lookahead:
             except StopIteration:
                 return None
         return self.buffer[n]
-
