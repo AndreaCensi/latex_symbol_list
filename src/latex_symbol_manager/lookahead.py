@@ -9,17 +9,17 @@ class Lookahead:
     def __iter__(self):
         return self
 
-    def next(self): #@ReservedAssignment
+    def __next__(self): #@ReservedAssignment
         if self.buffer:
             return self.buffer.pop(0)
         else:
-            return self.iter.next()
+            return next(self.iter)
 
     def lookahead(self, n):
         """Return an item n entries ahead in the iteration."""
         while n >= len(self.buffer):
             try:
-                self.buffer.append(self.iter.next())
+                self.buffer.append(next(self.iter))
             except StopIteration:
                 return None
         return self.buffer[n]

@@ -12,7 +12,7 @@ class NomenclatureEntry(yaml.YAMLObject):
 
 
 class Symbol(yaml.YAMLObject):
-    yaml_tag = u'!Symbol'
+    yaml_tag = '!Symbol'
 
     def __init__(self, symbol, tex, definition_order, tag=None, desc=None,
                  long=None, example=None, nargs=0,  # @ReservedAssignment
@@ -22,7 +22,7 @@ class Symbol(yaml.YAMLObject):
         self.definition_order = definition_order
         self.nargs = nargs
         self.desc = desc
-        self.long = long
+        self.long = int
         self.example = example
         self.tag = tag
         self.where = where

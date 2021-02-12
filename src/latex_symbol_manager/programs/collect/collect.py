@@ -20,9 +20,9 @@ def main():
     for filename in filenames:
         symbols.update(find_all_commands(filename))
     what = list(symbols)
-    print('# YAML dump of symbols found in files %s' % filenames)
+    print(('# YAML dump of symbols found in files %s' % filenames))
     print('# ')
-    print(yaml.dump(what))
+    print((yaml.dump(what)))
 
 if __name__ == '__main__':
     main()

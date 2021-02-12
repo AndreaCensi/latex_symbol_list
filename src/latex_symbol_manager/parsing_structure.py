@@ -1,7 +1,7 @@
-from . import (NewCommand, OtherLine, SpecialComment, SymbolSection, logger,
-    ParsingError, Lookahead, NomenclatureEntry, Symbol, parse_stream,
-    KNOWN_TAGS_SYMBOLS, KNOWN_TAGS_SECTIONS)
 import sys
+
+from . import (KNOWN_TAGS_SECTIONS, KNOWN_TAGS_SYMBOLS, logger, Lookahead, NewCommand, NomenclatureEntry,
+               OtherLine, parse_stream, ParsingError, SpecialComment, Symbol, SymbolSection)
 
 
 def warning(s, el=None):
@@ -52,16 +52,16 @@ def create_section(el, peek, sections, name, description):
             return name
         else:
             err = ('Already know section %r from %r.'
-                    % (name, sections[name].where))
+                   % (name, sections[name].where))
             raise ParsingError(err, el.where)
 
     # Check subs
     if '/' in name:
         parent = name.split('/')[0].strip()
         if not parent in sections:
-            if False: # tmp disable
+            if False:  # tmp disable
                 warning('Creating dummy parent section %r.\n '
-                    'Already know %s.' % (parent, sections.keys()), el)
+                        'Already know %s.' % (parent, list(sections.keys())), el)
             create_section(el, None, sections, parent, '')
     else:
         parent = None
@@ -109,12 +109,12 @@ def load_command(peek, el, current_section, symbols):
     tag = current_section.name
 
     if el.command in symbols:
-        err = ('Already know symbol %r from %r.' % 
-                (el.command, symbols[el.command].where))
+        err = ('Already know symbol %r from %r.' %
+               (el.command, symbols[el.command].where))
         raise ParsingError(err, el.where)
 
     # merge attributes from section
-    for k, v in current_section.attrs.items():
+    for k, v in list(current_section.attrs.items()):
         ok_to_disagree = ['def']
         if k in other and other[k] != v and not k in ok_to_disagree:
             warning('Note: tag %r = %r disagrees with section (%r)'
@@ -125,7 +125,8 @@ def load_command(peek, el, current_section, symbols):
     definition_order = len(symbols)
     s = Symbol(el.command, definition_order=definition_order,
                tex=el.body, desc=el.comment, tag=tag,
-               long=None, example=example, nargs=el.nargs,
+               # int=None,
+               example=example, nargs=el.nargs,
                where=el.where, nomenclature=nomenc,
                other=other)
     symbols[el.command] = s
@@ -136,8 +137,8 @@ def load_command(peek, el, current_section, symbols):
 def load_attributes(peek, known, stop_on=['section']):
     attrs = {}
     while (isinstance(peek.lookahead(0), SpecialComment) and
-        not(peek.lookahead(0).tag in stop_on)):
-        sc = peek.next()
+           not (peek.lookahead(0).tag in stop_on)):
+        sc = next(peek)
         if not sc.tag in KNOWN_TAGS_SYMBOLS:
             warning('Found strange tag %r.' % sc.tag, sc)
         if sc.tag in attrs:
@@ -150,6 +151,6 @@ def main():
     for cmd in parse_symbols(sys.stdin, 'stdin'):
         print(cmd)
 
+
 if __name__ == '__main__':
     main()
-

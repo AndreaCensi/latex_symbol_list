@@ -66,7 +66,7 @@ def parse_stream(stream, filename, line_count=0):
                 while (peek.lookahead(0)
                        and is_comment(peek.lookahead(0))
                        and not is_special_comment(peek.lookahead(0))):
-                    comment_line = peek.next()
+                    comment_line = next(peek)
                     # Strip empty comments
                     content = content_of_comment(comment_line)
                     if content:

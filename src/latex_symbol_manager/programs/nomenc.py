@@ -34,7 +34,7 @@ def nomenc_main(args):
             logger.info('have_but_not_used: %s' % have_but_not_used)
             logger.info('used_but_not_have: %s' % used_but_not_have)
         have_and_used = have.intersection(used)
-        symbols = dict((k, v) for k, v in symbols.items()
+        symbols = dict((k, v) for k, v in list(symbols.items())
                        if k in have_and_used)
     else:
         only = None
@@ -48,7 +48,7 @@ def print_nomenclature(symbols, stream, skip_empty=True):
         if also_log:
             logger.warn(s)
 
-    for symbol in symbols.values():
+    for symbol in list(symbols.values()):
         symbol_name = symbol.symbol[1:]
         if 'nomenc-exclude' in symbol.other:
             warn('Skipping symbol %s because of '

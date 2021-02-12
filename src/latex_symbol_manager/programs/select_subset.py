@@ -32,15 +32,15 @@ def main():
         l = []
         for x in names:
             lx = []
-            for k in sections.keys():
+            for k in list(sections.keys()):
                 if x in k:
                     lx.append(sections[k])
 
             if x == 'all':
-                lx.extend(sections.values())
+                lx.extend(list(sections.values()))
             if not lx:
                 raise Exception('Section %s not found in %s'
-                                % (x, sections.keys()))
+                                % (x, list(sections.keys())))
 
             l.extend(lx)
         return l
@@ -71,7 +71,7 @@ def main():
         if section in color_red:
             wrapper = wrap_red
 
-        for symbol in section.symbols.values():
+        for symbol in list(section.symbols.values()):
             f.write(symbol.tex_definition(wrapper=wrapper))
             f.write('\n')
 

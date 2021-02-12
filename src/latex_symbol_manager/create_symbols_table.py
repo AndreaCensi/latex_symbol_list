@@ -66,7 +66,7 @@ def create_table(sections, output, write_examples=True, example_size='8cm',
                 if section.parent is None:
                     table.hline()
 
-                symbols = [v for _, v in section.symbols.items()]
+                symbols = [v for _, v in list(section.symbols.items())]
                 symbols.sort(key=symbols_sort_key)
                 for s in symbols:
                     write_symbol_rows(s, table,
@@ -87,7 +87,7 @@ def create_table_minimal(sections, output,
                 if section.parent is None:
                     table.hline()
 
-                symbols = [v for _, v in section.symbols.items()]
+                symbols = [v for _, v in list(section.symbols.items())]
                 symbols.sort(key=symbols_sort_key)
                 for s in symbols:
                     if s.nargs != 0:  # do not write out thes
@@ -127,14 +127,14 @@ def main():
         which = None #XXX add switch
         if which:
             selected = dict([(k, v)
-                             for (k, v) in sections.items() if k in which])
+                             for (k, v) in list(sections.items()) if k in which])
         else:
             selected = sections
 
         if not selected:
             raise Exception('No sections selected (which: %r)' % which)
 
-        ordered = [v for k, v in selected.items()]
+        ordered = [v for k, v in list(selected.items())]
         if options.sort_sections_alpha:
             key = lambda v: v.name
         else:
@@ -156,7 +156,7 @@ def main():
         styles = {'minimal': minimal, 'full': full}
         if options.style not in styles:
             msg = ('No known style %r. Valid options: %s.' %
-                   (options.style, styles.keys()))
+                   (options.style, list(styles.keys())))
             raise Exception(msg)
         styles[options.style]()
 
