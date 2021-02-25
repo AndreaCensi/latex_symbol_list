@@ -1,19 +1,27 @@
 from collections import namedtuple
 
+NO_SUMMARY = 'nosummary'
 
+NO_INLINE = 'no-inline'
+NOMENC = 'nomenc'
+NOMENC_EXCLUDE = 'nomenc-exclude'
+TODO = "todo"
+SEE_ALSO = 'def'
+SORT = 'def'
+NOT_FINAL = 'notfinal'
+DEPRECATED = 'deprecated'
+EXAMPLE = 'example'
 KNOWN_TAGS_SYMBOLS = [
-    "def",
-    "nomenc",
-    "nomenc-exclude",
-    "nosummary",
-    "sort",
-    "notfinal",
-    "deprecated",
-    "example",
-    "todo",
+    SEE_ALSO,
+    NOMENC,
+    NOMENC_EXCLUDE,
+    NO_SUMMARY,
+    SORT,
+    EXAMPLE, DEPRECATED, NOT_FINAL,
+    TODO,
+    NO_INLINE,
 ]
-KNOWN_TAGS_SECTIONS = ["nomenc-exclude", "notfinal", "deprecated"]
-
+KNOWN_TAGS_SECTIONS = [NOMENC_EXCLUDE, NOT_FINAL, DEPRECATED]
 
 # These are the possible results of parsing a tex file
 NewCommand = namedtuple("NewCommand", "command nargs body comment where")
@@ -22,7 +30,7 @@ OtherLine = namedtuple("OtherLine", "line where")
 
 SymbolSection = namedtuple(
     "SymbolSection",
-    "name description symbols parent subs where " "definition_order attrs",
+    "name description symbols parent subs where definition_order attrs",
 )
 
 

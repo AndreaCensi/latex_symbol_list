@@ -1,9 +1,12 @@
 import logging
 
-logging.basicConfig()
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+from zuper_commons import ZLogger
 
+logger = ZLogger(__name__)
+# logging.basicConfig()
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.DEBUG)
+import zuper_typing
 from .lookahead import *
 from .symbol import *
 from .structures import *

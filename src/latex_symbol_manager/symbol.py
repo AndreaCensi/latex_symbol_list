@@ -7,7 +7,7 @@ class NomenclatureEntry(yaml.YAMLObject):
         self.text = text
 
     def __repr__(self):
-        return "Nom(%r, %r)" % (self.label, self.text)
+        return f"Nom({self.label!r}, {self.text!r})"
 
 
 class Symbol(yaml.YAMLObject):
@@ -57,7 +57,7 @@ class Symbol(yaml.YAMLObject):
             params = "{%s}[%s]{%s}" % (cmd, self.nargs, self.tex)
         else:
             params = "{%s}{%s}" % (cmd, self.tex)
-        return "\\newcommand%s" % params
+        return f"\\newcommand{params}"
 
     def tex_definition(self, wrapper=None):
         if wrapper is None:

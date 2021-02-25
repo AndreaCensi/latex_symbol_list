@@ -1,4 +1,6 @@
 import sys
+from typing import Dict, Tuple
+
 from .parsing_structure import parse_symbols
 
 __all__ = [
@@ -18,7 +20,7 @@ def parse_all_symbols(args):
                     yield x
 
 
-def parse_all_sections_symbols(args):
+def parse_all_sections_symbols(args) -> Tuple[Dict, Dict]:
     sections = {}
     symbols = {}
 

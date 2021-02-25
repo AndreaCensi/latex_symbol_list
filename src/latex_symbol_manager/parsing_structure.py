@@ -1,4 +1,5 @@
 import sys
+from typing import Dict, Iterator, Optional, Union
 
 from . import (
     KNOWN_TAGS_SECTIONS,
@@ -23,7 +24,8 @@ def warning(s, el=None):
         logger.warn("Warning: %s" % s)
 
 
-def parse_symbols(stream, filename, sections=None, symbols=None):
+def parse_symbols(stream, filename, sections: Optional[Dict] = None, symbols: Optional[Dict] = None) -> \
+    Iterator[Union[OtherLine, SymbolSection, Symbol]]:
     current_section = None
     if sections is None:
         sections = {}
@@ -41,7 +43,11 @@ def parse_symbols(stream, filename, sections=None, symbols=None):
                 if not ":" in el.lines[0] or len(el.lines) > 1:
                     err = "Malformed section tag: {0!r}".format(el)
                     raise ParsingError(err, el.where)
-                name, description = el.lines[0].split(":")
+
+                name, sep, description = el.lines[0].partition(':')
+                if not sep:
+                    err = f"Expected separator, got {el.lines[0]}"
+                    raise ParsingError(err, el.where)
                 name = name.strip()
                 description = description.strip()
                 current_section = create_section(el, peek, sections, name, description)
@@ -55,7 +61,7 @@ def parse_symbols(stream, filename, sections=None, symbols=None):
             assert False
 
 
-def create_section(el, peek, sections, name, description):
+def create_section(el, peek, sections, name, description) -> SymbolSection:
     if name in sections:
         if sections[name].description is None:
             # if it was temporary
@@ -130,7 +136,7 @@ def load_command(peek, el, current_section, symbols):
 
     # merge attributes from section
     for k, v in list(current_section.attrs.items()):
-        ok_to_disagree = ["def"]
+        ok_to_disagree = [SEE_ALSO]
         if k in other and other[k] != v and not k in ok_to_disagree:
             warning(
                 "Note: tag %r = %r disagrees with section (%r)" % (k, other[k], v), el
