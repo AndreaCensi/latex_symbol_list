@@ -4,7 +4,15 @@ from optparse import OptionParser
 from typing import Dict, Set
 
 import yaml
-from latex_gen import (color_rgb, emph, footnotesize, latex_escape, latex_fragment, texttt, verbatim_soft)
+from latex_gen import (
+    color_rgb,
+    emph,
+    footnotesize,
+    latex_escape,
+    latex_fragment,
+    texttt,
+    verbatim_soft,
+)
 
 from latex_symbol_manager.programs.collect import find_all_commands_in_string
 from . import logger, NO_INLINE, NO_SUMMARY, Symbol
@@ -15,8 +23,10 @@ def raw_appearance(s):
     return color_rgb(texttt(s), [0.5, 0.5, 0.5])
 
 
-def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_size, is_unused: bool):
-    x = '\\unused ' if is_unused else ''
+def write_symbol_rows(
+    s, table, write_examples: bool, write_desc: bool, example_size, is_unused: bool
+):
+    x = "\\unused " if is_unused else ""
 
     used_example = False
 
@@ -36,13 +46,13 @@ def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_
         # args = ",".join(["..."] * s.nargs)
 
         if NO_INLINE in s.other:
-            example = ''
+            example = ""
             example_label = s.symbol
         else:
 
             if s.example is None:  # and s.nargs > 0:
-                put = ['a', 'b', 'c', 'd', 'e']
-                args = "".join('{%s}' % _ for _ in put[:s.nargs])
+                put = ["a", "b", "c", "d", "e"]
+                args = "".join("{%s}" % _ for _ in put[: s.nargs])
                 example = f"${s.symbol}{args}$"
                 example_label = f"{s.symbol}{args}"
             else:
@@ -77,6 +87,7 @@ def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_
                         # mp.tex(footnotesize(verbatim_soft(s.example)))
             # row.cell()
             row.cell_tex(footnotesize(verbatim_soft(s.example)))
+
 
 def create_table(
     sections,
@@ -114,7 +125,7 @@ def create_table(
                 for s in symbols:
                     is_unused = s.symbol in unused_symbols
                     if is_unused:
-                        print(f'% symbol {s.symbol} not used')
+                        print(f"% symbol {s.symbol} not used")
                     write_symbol_rows(
                         s,
                         table,
@@ -125,8 +136,12 @@ def create_table(
                     )
 
 
-def create_table_minimal(sections, unused_symbols: Set[str], output,
-                         symbols_sort_key=lambda x: x.symbol.lower()):
+def create_table_minimal(
+    sections,
+    unused_symbols: Set[str],
+    output,
+    symbols_sort_key=lambda x: x.symbol.lower(),
+):
     with latex_fragment(output) as fragment:
         with fragment.longtable(["c", "l"]) as table:
 
@@ -191,7 +206,7 @@ def main():
                 only = yaml.load(f)
 
             more = get_symbols_used_in_definitions(symbols)
-            logger.info(f'found more in definitions', more=more)
+            logger.info(f"found more in definitions", more=more)
             have = set(symbols.keys())
 
             used = set(only)
@@ -210,6 +225,7 @@ def main():
             have_but_not_used = set()
 
         from .programs.nomenc import order_sections
+
         sections = order_sections(sections)
         logger.info(sorted=list(sections))
         logger.info(
@@ -241,17 +257,39 @@ def main():
             key = lambda v: v.definition_order
 
         def full():
-            create_table(ordered, have_but_not_used, sys.stdout, write_examples=True, write_desc=True,symbols_sort_key=key)
+            create_table(
+                ordered,
+                have_but_not_used,
+                sys.stdout,
+                write_examples=True,
+                write_desc=True,
+                symbols_sort_key=key,
+            )
 
         def medium():
-            create_table(ordered, have_but_not_used, sys.stdout, write_examples=False, write_desc=True,symbols_sort_key=key)
+            create_table(
+                ordered,
+                have_but_not_used,
+                sys.stdout,
+                write_examples=False,
+                write_desc=True,
+                symbols_sort_key=key,
+            )
 
         def small():
-            create_table(ordered, have_but_not_used, sys.stdout, write_examples=False, write_desc=False, symbols_sort_key=key)
-
+            create_table(
+                ordered,
+                have_but_not_used,
+                sys.stdout,
+                write_examples=False,
+                write_desc=False,
+                symbols_sort_key=key,
+            )
 
         def minimal():
-            create_table_minimal(ordered, have_but_not_used, sys.stdout, symbols_sort_key=key)
+            create_table_minimal(
+                ordered, have_but_not_used, sys.stdout, symbols_sort_key=key
+            )
 
         styles = {"minimal": minimal, "full": full, "small": small, "medium": medium}
         if options.style not in styles:

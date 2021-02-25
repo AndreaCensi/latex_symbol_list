@@ -24,8 +24,9 @@ def warning(s, el=None):
         logger.warn("Warning: %s" % s)
 
 
-def parse_symbols(stream, filename, sections: Optional[Dict] = None, symbols: Optional[Dict] = None) -> \
-    Iterator[Union[OtherLine, SymbolSection, Symbol]]:
+def parse_symbols(
+    stream, filename, sections: Optional[Dict] = None, symbols: Optional[Dict] = None
+) -> Iterator[Union[OtherLine, SymbolSection, Symbol]]:
     current_section = None
     if sections is None:
         sections = {}
@@ -44,7 +45,7 @@ def parse_symbols(stream, filename, sections: Optional[Dict] = None, symbols: Op
                     err = "Malformed section tag: {0!r}".format(el)
                     raise ParsingError(err, el.where)
 
-                name, sep, description = el.lines[0].partition(':')
+                name, sep, description = el.lines[0].partition(":")
                 if not sep:
                     err = f"Expected separator, got {el.lines[0]}"
                     raise ParsingError(err, el.where)

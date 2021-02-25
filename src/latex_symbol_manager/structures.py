@@ -1,23 +1,25 @@
 from collections import namedtuple
 
-NO_SUMMARY = 'nosummary'
+NO_SUMMARY = "nosummary"
 
-NO_INLINE = 'no-inline'
-NOMENC = 'nomenc'
-NOMENC_EXCLUDE = 'nomenc-exclude'
+NO_INLINE = "no-inline"
+NOMENC = "nomenc"
+NOMENC_EXCLUDE = "nomenc-exclude"
 TODO = "todo"
-SEE_ALSO = 'def'
-SORT = 'def'
-NOT_FINAL = 'notfinal'
-DEPRECATED = 'deprecated'
-EXAMPLE = 'example'
+SEE_ALSO = "def"
+SORT = "def"
+NOT_FINAL = "notfinal"
+DEPRECATED = "deprecated"
+EXAMPLE = "example"
 KNOWN_TAGS_SYMBOLS = [
     SEE_ALSO,
     NOMENC,
     NOMENC_EXCLUDE,
     NO_SUMMARY,
     SORT,
-    EXAMPLE, DEPRECATED, NOT_FINAL,
+    EXAMPLE,
+    DEPRECATED,
+    NOT_FINAL,
     TODO,
     NO_INLINE,
 ]

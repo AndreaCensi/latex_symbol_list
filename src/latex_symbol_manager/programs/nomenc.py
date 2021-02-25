@@ -5,7 +5,14 @@ from typing import Dict
 import yaml
 from latex_gen import latex_fragment
 
-from .. import logger, NOMENC_EXCLUDE, parse_all_sections_symbols, SEE_ALSO, SORT, SymbolSection
+from .. import (
+    logger,
+    NOMENC_EXCLUDE,
+    parse_all_sections_symbols,
+    SEE_ALSO,
+    SORT,
+    SymbolSection,
+)
 from ..utils import wrap_script_entry_point
 
 
@@ -53,14 +60,16 @@ def order_sections(a: Dict[str, object]) -> Dict[str, object]:
         result[first] = a[first]
         children = []
         for x in list(original):
-            if x.startswith(first + '/'):
+            if x.startswith(first + "/"):
                 original.remove(x)
                 result[x] = a[x]
             children.append(x)
     return result
 
 
-def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x: x.symbol.lower()):
+def create_table_nomenclature(
+    only, sections, output, symbols_sort_key=lambda x: x.symbol.lower()
+):
     sections = list(sections.values())
 
     def warn(ss, also_log=True):
@@ -69,13 +78,15 @@ def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x:
             logger.warn(ss)
 
     with latex_fragment(output) as fragment:
-        with fragment.longtable(["l", "l", 'l', 'r']) as table:
+        with fragment.longtable(["l", "l", "l", "r"]) as table:
 
             for section in sections:
-                symbols = [v for _, v in section.symbols.items()
-                           if (NOMENC_EXCLUDE not in v.other)  # and (_ in only)
-                           and
-                           (v.nomenclature or v.nargs == 0)]
+                symbols = [
+                    v
+                    for _, v in section.symbols.items()
+                    if (NOMENC_EXCLUDE not in v.other)  # and (_ in only)
+                    and (v.nomenclature or v.nargs == 0)
+                ]
 
                 if (not symbols) and (not section.subs):
                     continue
@@ -87,12 +98,12 @@ def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x:
                         s = section.description
 
                     if not s:
-                        s = '-'
+                        s = "-"
 
                     if section.parent is None:
-                        row.multicolumn_tex(4, "l", '\\nomencsectionname{%s}' % s)
+                        row.multicolumn_tex(4, "l", "\\nomencsectionname{%s}" % s)
                     else:
-                        row.multicolumn_tex(4, "c", '\\nomencsubsectionname{%s}' % s)
+                        row.multicolumn_tex(4, "c", "\\nomencsubsectionname{%s}" % s)
 
                 if section.parent is None:
                     table.hline()
@@ -105,7 +116,10 @@ def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x:
                     if s.nomenclature is None:
 
                         if s.nargs != 0:
-                            warn(f"Skipping symbol {s.symbol} because it has args.", False)
+                            warn(
+                                f"Skipping symbol {s.symbol} because it has args.",
+                                False,
+                            )
                             continue
 
                         text = s.desc
@@ -117,7 +131,7 @@ def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x:
                     with table.row() as row:
                         row.cell_tex(label)
                         if s.symbol not in only:
-                            text = '\\unused ' + text
+                            text = "\\unused " + text
                         row.cell_tex(text)
 
                         ref = s.other.get(SEE_ALSO, "")
@@ -130,14 +144,16 @@ def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x:
                                     "in a way which is not debuggable" % (s, ref)
                                 )
                                 raise Exception(msg)
-                            row.cell_tex('$\\to$\\cref{%s}' % ref)
-                            row.cell_tex('\\pageref{%s}' % ref)
+                            row.cell_tex("$\\to$\\cref{%s}" % ref)
+                            row.cell_tex("\\pageref{%s}" % ref)
                         else:
-                            row.cell_tex('')
-                            row.cell_tex('')
+                            row.cell_tex("")
+                            row.cell_tex("")
 
 
-def print_nomenclature(symbols, sections: Dict[str, SymbolSection], stream, skip_empty=True):
+def print_nomenclature(
+    symbols, sections: Dict[str, SymbolSection], stream, skip_empty=True
+):
     def warn(ss, also_log=True):
         stream.write("%% %s\n" % ss)
         if also_log:
@@ -151,7 +167,8 @@ def print_nomenclature(symbols, sections: Dict[str, SymbolSection], stream, skip
             symbol_name = symbol.symbol[1:]
             if NOMENC_EXCLUDE in symbol.other:
                 warn(
-                    f"Skipping symbol {symbol.symbol} because of {NOMENC_EXCLUDE}", False
+                    f"Skipping symbol {symbol.symbol} because of {NOMENC_EXCLUDE}",
+                    False,
                 )
                 continue
 

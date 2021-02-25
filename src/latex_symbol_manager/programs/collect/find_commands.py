@@ -9,8 +9,8 @@ def find_all_commands(filename):
     """ Finds all TeX commands used in the file. """
     commands = set()
     for line in open(filename):
-        if '%' in line:
-            i = line.index('%')
+        if "%" in line:
+            i = line.index("%")
             line = line[:i]
         for x in command_regex.findall(line):
             commands.add(x)
