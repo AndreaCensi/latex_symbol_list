@@ -1,8 +1,9 @@
 from optparse import OptionParser
 
-from latex_symbol_manager.programs.collect.find_commands import find_all_commands
-from .. import logger, parse_all_sections_symbols
-from ..utils import wrap_script_entry_point
+from latex_symbol_manager.interface import parse_all_sections_symbols
+from latex_symbol_manager.script_utils import wrap_script_entry_point
+from . import logger
+from .find_commands import find_all_commands
 
 __all__ = ["lsm_extract_main"]
 

@@ -1,6 +1,10 @@
-from . import OtherLine, ParsingError, SymbolSection, Symbol, parse_all_symbols
+
 from optparse import OptionParser
 import sys
+
+from  .interface import parse_all_symbols
+from  .structures import OtherLine, ParsingError, SymbolSection
+from  .symbol import Symbol
 
 
 def main():

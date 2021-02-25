@@ -1,20 +1,15 @@
 import sys
 from typing import Dict, Iterator, Optional, Union
 
-from . import (
-    KNOWN_TAGS_SECTIONS,
-    KNOWN_TAGS_SYMBOLS,
-    logger,
-    Lookahead,
-    NewCommand,
-    NomenclatureEntry,
-    OtherLine,
-    parse_stream,
-    ParsingError,
-    SpecialComment,
-    Symbol,
-    SymbolSection,
-)
+from . import (logger, )
+from .lookahead import Lookahead
+from .parsing import parse_stream
+from .structures import (KNOWN_TAGS_SECTIONS, KNOWN_TAGS_SYMBOLS, NewCommand, NOMENC, OtherLine, ParsingError,
+                         SEE_ALSO,
+                         SpecialComment,
+                         SymbolSection,
+                         TODO)
+from .symbol import NomenclatureEntry, Symbol
 
 
 def warning(s, el=None):
@@ -111,13 +106,13 @@ def load_command(peek, el, current_section, symbols):
 
     other = load_attributes(peek, KNOWN_TAGS_SYMBOLS)
 
-    if "todo" in other:
-        logger.warn("TODO (%s): %s" % (el.command, other["todo"]))
+    if TODO in other:
+        logger.warn("TODO (%s): %s" % (el.command, other[TODO]))
 
-    if "nomenc" in other:
+    if NOMENC in other:
         parts = other["nomenc"].split(":")
         if len(parts) != 2:
-            err = "Too many elements in %r" % other["nomenc"]
+            err = "Too many elements in %r" % other[NOMENC]
             raise ParsingError(err, el.where)
         label, text = parts
         nomenc = NomenclatureEntry(label, text)
@@ -164,7 +159,7 @@ def load_command(peek, el, current_section, symbols):
     return s
 
 
-def load_attributes(peek, known, stop_on=["section"]):
+def load_attributes(peek, known, stop_on=("section",)):
     attrs = {}
     while isinstance(peek.lookahead(0), SpecialComment) and not (
         peek.lookahead(0).tag in stop_on

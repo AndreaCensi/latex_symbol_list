@@ -1,4 +1,5 @@
-from .. import parse_all_sections_symbols, logger
+from  .interface import parse_all_sections_symbols
+from . import logger
 from optparse import OptionParser
 import sys
 

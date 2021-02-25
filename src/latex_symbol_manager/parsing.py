@@ -1,10 +1,11 @@
-from . import NewCommand, OtherLine, SpecialComment, ParsingError, Where, Lookahead
+from .structures import NewCommand, OtherLine, SpecialComment, ParsingError, Where
+from .lookahead import Lookahead
 import re
 import sys
 
 
 def strip_empty(stream):
-    for line in stream:  # @UnusedVariable
+    for line in stream:
         if line is not None:
             # and line.strip():
             yield line

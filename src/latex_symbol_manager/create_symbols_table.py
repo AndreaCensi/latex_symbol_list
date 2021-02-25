@@ -14,8 +14,10 @@ from latex_gen import (
     verbatim_soft,
 )
 
-from latex_symbol_manager.programs.collect import find_all_commands_in_string
-from . import logger, NO_INLINE, NO_SUMMARY, Symbol
+from .find_commands import find_all_commands_in_string
+from . import logger
+from .structures import NO_INLINE, NO_SUMMARY
+from .symbol import Symbol
 from .interface import parse_all_sections_symbols
 
 
@@ -224,7 +226,7 @@ def main():
         else:
             have_but_not_used = set()
 
-        from .programs.nomenc import order_sections
+        from .nomenc import order_sections
 
         sections = order_sections(sections)
         logger.info(sorted=list(sections))

@@ -5,15 +5,12 @@ from typing import Dict
 import yaml
 from latex_gen import latex_fragment
 
-from .. import (
-    logger,
-    NOMENC_EXCLUDE,
-    parse_all_sections_symbols,
-    SEE_ALSO,
-    SORT,
-    SymbolSection,
+from latex_symbol_manager.script_utils import wrap_script_entry_point
+from  .interface import parse_all_sections_symbols
+from . import (
+    logger
 )
-from ..utils import wrap_script_entry_point
+from .structures import NOMENC_EXCLUDE, SEE_ALSO, SORT, SymbolSection
 
 
 def nomenc_main(args):

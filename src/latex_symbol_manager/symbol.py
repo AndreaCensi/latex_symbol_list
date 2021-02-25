@@ -90,8 +90,7 @@ class Symbol(yaml.YAMLObject):
 
     def symbol_dependencies(self):
         """ Returns all the commands used by the definition """
-        from latex_symbol_manager.programs.collect.find_commands import (
-            find_all_commands_in_string,
-        )
+        from  .find_commands import find_all_commands_in_string
+
 
         return find_all_commands_in_string(self.tex)

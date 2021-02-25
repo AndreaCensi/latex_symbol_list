@@ -13,10 +13,10 @@ setup(
             "lsm_test2 = latex_symbol_manager.parsing_structure:main",
             "lsm_table = latex_symbol_manager.create_symbols_table:main",
             "lsm_symbols = latex_symbol_manager.compact_all:main",
-            "lsm_extract = latex_symbol_manager.programs:lsm_extract_main",
+            "lsm_extract = latex_symbol_manager.extract:lsm_extract_main",
             #'lsm_select = latex_symbol_manager.programs.select_subset:main',
-            "lsm_nomenc = latex_symbol_manager.programs.nomenc:main",
-            "lsm_collect = latex_symbol_manager.programs.collect.collect:main",
+            "lsm_nomenc = latex_symbol_manager.nomenc:main",
+            "lsm_collect = latex_symbol_manager.collect:main",
         ]
     },
     install_requires=["LaTeXGen", "pyyaml"],
