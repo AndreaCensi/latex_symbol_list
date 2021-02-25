@@ -1,14 +1,23 @@
 import sys
 from typing import Dict, Iterator, Optional, Union
 
-from . import (logger, )
+from . import (
+    logger,
+)
 from .lookahead import Lookahead
 from .parsing import parse_stream
-from .structures import (KNOWN_TAGS_SECTIONS, KNOWN_TAGS_SYMBOLS, NewCommand, NOMENC, OtherLine, ParsingError,
-                         SEE_ALSO,
-                         SpecialComment,
-                         SymbolSection,
-                         TODO)
+from .structures import (
+    KNOWN_TAGS_SECTIONS,
+    KNOWN_TAGS_SYMBOLS,
+    NewCommand,
+    NOMENC,
+    OtherLine,
+    ParsingError,
+    SEE_ALSO,
+    SpecialComment,
+    SymbolSection,
+    TODO,
+)
 from .symbol import NomenclatureEntry, Symbol
 
 

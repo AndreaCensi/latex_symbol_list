@@ -1,7 +1,7 @@
 from optparse import OptionParser
 import yaml
 
-from  .find_commands import find_all_commands
+from .find_commands import find_all_commands
 
 usage = """ 
 

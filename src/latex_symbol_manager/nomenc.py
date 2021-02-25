@@ -6,10 +6,8 @@ import yaml
 from latex_gen import latex_fragment
 
 from latex_symbol_manager.script_utils import wrap_script_entry_point
-from  .interface import parse_all_sections_symbols
-from . import (
-    logger
-)
+from .interface import parse_all_sections_symbols
+from . import logger
 from .structures import NOMENC_EXCLUDE, SEE_ALSO, SORT, SymbolSection
 
 
