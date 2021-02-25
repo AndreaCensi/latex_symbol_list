@@ -1,24 +1,27 @@
-from setuptools import setup, find_packages
+import json
 
-setup(
-    name="LatexSymbolManager",
-    author="Andrea Censi",
-    author_email="censi@mit.edu",
-    version="0.6",
-    package_dir={"": "src"},
-    packages=find_packages("src"),
-    entry_points={
-        "console_scripts": [
-            "lsm_test1 = latex_symbol_manager.parsing:main",
-            "lsm_test2 = latex_symbol_manager.parsing_structure:main",
-            "lsm_table = latex_symbol_manager.create_symbols_table:main",
-            "lsm_symbols = latex_symbol_manager.compact_all:main",
-            "lsm_extract = latex_symbol_manager.extract:lsm_extract_main",
-            #'lsm_select = latex_symbol_manager.programs.select_subset:main',
-            "lsm_nomenc = latex_symbol_manager.nomenc:main",
-            "lsm_collect = latex_symbol_manager.collect:main",
-        ]
-    },
-    install_requires=["LaTeXGen", "pyyaml"],
-    extras_require={},
+from setuptools import setup
+
+with open("setup.json") as f:
+    data = json.load(f)
+
+# setup package
+params = dict(
+    name=data["package_name"],
+    author=data["author"],
+    author_email=data["author_email"],
+    url=data["url"],
+    tests_require=data["tests_require"],
+    install_requires=data["install_requires"],
+    package_dir={"": data["srcdir"]},
+    packages=data["modules"],
+    long_description="",
+    version=data["version"],
+    entry_points=data["entry_points"],
+    zip_safe=data["zip_safe"],
+    include_package_data=data["include_package_data"],
 )
+
+setup(**params)
+
+# sigil db3b1eaa6e910979b80cf8826d500c83
