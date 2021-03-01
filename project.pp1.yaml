@@ -1,4 +1,4 @@
-package_name: LatexSymbolManager
+package_name: LatexSymbolManager-z7
 srcdir: src
 version_file: "1"
 modules:
@@ -10,7 +10,17 @@ install_requires:
 install_conflicts: [ 'PACKAGENAME-*' ]
 tests_require: [ ]
 
-console_scripts: {}
+console_scripts:
+    lsm_test1: latex_symbol_manager.parsing:main
+    lsm_test2: latex_symbol_manager.parsing_structure:main
+    lsm_table: latex_symbol_manager.create_symbols_table:main
+    lsm_symbols: latex_symbol_manager.compact_all:main
+    lsm_extract: latex_symbol_manager.extract:lsm_extract_main
+    lsm_nomenc: latex_symbol_manager.nomenc:main
+    lsm_collect: latex_symbol_manager.collect:main
+    lsm_equations: latex_symbol_manager.find_equations:main
+
+
 
 nose:
   modules:
