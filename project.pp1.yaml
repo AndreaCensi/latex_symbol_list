@@ -5,7 +5,7 @@ modules:
   - latex_symbol_manager
 
 install_requires:
-  - LaTeXGen
+  - latex-gen-z7
   - PyYAML
 install_conflicts: [ 'PACKAGENAME-*' ]
 tests_require: [ ]
