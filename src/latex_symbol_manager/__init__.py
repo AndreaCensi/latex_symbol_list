@@ -9,6 +9,8 @@ logger = ZLogger(__name__)
 # logger.setLevel(logging.DEBUG)
 import zuper_typing
 
+_ = zuper_typing
+
 # from .lookahead import *
 # from .symbol import *
 # from .structures import *

@@ -7,6 +7,8 @@ modules:
 install_requires:
   - latex-gen-z7
   - PyYAML
+  - zuper-typing-z7
+  - zuper-commons-z7
 install_conflicts: [ 'PACKAGENAME-*' ]
 tests_require: [ ]
 
