@@ -4,6 +4,7 @@ from optparse import OptionParser
 from typing import Dict, Set
 
 import yaml
+
 from latex_gen import (
     color_rgb,
     emph,
@@ -13,21 +14,18 @@ from latex_gen import (
     texttt,
     verbatim_soft,
 )
-
-from .find_commands import find_all_commands_in_string
 from . import logger
+from .find_commands import find_all_commands_in_string
+from .interface import parse_all_sections_symbols
 from .structures import NO_INLINE, NO_SUMMARY
 from .symbol import Symbol
-from .interface import parse_all_sections_symbols
 
 
 def raw_appearance(s):
     return color_rgb(texttt(s), [0.5, 0.5, 0.5])
 
 
-def write_symbol_rows(
-    s, table, write_examples: bool, write_desc: bool, example_size, is_unused: bool
-):
+def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_size, is_unused: bool):
     x = "\\unused " if is_unused else ""
 
     used_example = False
@@ -36,8 +34,12 @@ def write_symbol_rows(
         with table.row() as row:
             row.cell_tex(raw_appearance(latex_escape(s.symbol)))
 
-            if not NO_SUMMARY in s.other:
-                row.cell_tex("$%s$" % s.symbol)
+            if NO_SUMMARY not in s.other:
+                if s.example is None:
+                    example = "$%s$" % s.symbol
+                else:
+                    example = s.example
+                row.cell_tex(example)
             else:
                 row.cell_tex("(nosummary)")
             if write_desc:
@@ -139,10 +141,7 @@ def create_table(
 
 
 def create_table_minimal(
-    sections,
-    unused_symbols: Set[str],
-    output,
-    symbols_sort_key=lambda x: x.symbol.lower(),
+    sections, unused_symbols: Set[str], output, symbols_sort_key=lambda x: x.symbol.lower(),
 ):
     with latex_fragment(output) as fragment:
         with fragment.longtable(["c", "l"]) as table:
@@ -177,21 +176,16 @@ def get_symbols_used_in_definitions(symbols: Dict[str, Symbol]) -> Set[str]:
 
 def main():
     parser = OptionParser()
+    parser.add_option("--only", help="YAML file containing the symbols" "that must be included.")
     parser.add_option(
-        "--only", help="YAML file containing the symbols" "that must be included."
-    )
-    parser.add_option(
-        "--sort_sections_alpha",
-        help="Sort sections alphabetically",
-        default=False,
-        action="store_true",
+        "--sort_sections_alpha", help="Sort sections alphabetically", default=False, action="store_true",
     )
 
     parser.add_option(
-        "--sort_symbols_alpha",
-        help="Sort symbols alphabetically",
-        default=False,
-        action="store_true",
+        "--verbose", default=False, action="store_true",
+    )
+    parser.add_option(
+        "--sort_symbols_alpha", help="Sort symbols alphabetically", default=False, action="store_true",
     )
 
     parser.add_option("--style", help="Type of table", default="full")
@@ -205,21 +199,22 @@ def main():
 
         if options.only:
             with open(options.only) as f:
-                only = yaml.load(f)
+                only = yaml.load(f, Loader=yaml.Loader)
 
             more = get_symbols_used_in_definitions(symbols)
-            logger.info(f"found more in definitions", more=more)
+            if options.verbose:
+                logger.info(f"found more in definitions", more=more)
             have = set(symbols.keys())
 
             used = set(only)
             used.update(more)
             have_but_not_used = have.difference(used)
             used_but_not_have = used.difference(have)
-            # if options.verbose:
-            logger.info(have=have)
-            logger.info(used=used)
-            logger.info(have_but_not_used=have_but_not_used)
-            logger.info(used_but_not_have=used_but_not_have)
+            if options.verbose:
+                logger.debug(have=have)
+                logger.debug(used=used)
+                logger.debug(have_but_not_used=have_but_not_used)
+                logger.debug(used_but_not_have=used_but_not_have)
             # have_and_used = have.intersection(used)
             # used_symbols = set(dict((k, v) for k, v in list(symbols.items()) if k in have_and_used))
             # TODO: remove symbols from sections
@@ -229,10 +224,8 @@ def main():
         from .nomenc import order_sections
 
         sections = order_sections(sections)
-        logger.info(sorted=list(sections))
-        logger.info(
-            "Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols))
-        )
+        # logger.info(sorted=list(sections))
+        logger.info("Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols)))
         if not sections or not symbols:
             raise Exception("Not enough data found.")
 
@@ -289,16 +282,11 @@ def main():
             )
 
         def minimal():
-            create_table_minimal(
-                ordered, have_but_not_used, sys.stdout, symbols_sort_key=key
-            )
+            create_table_minimal(ordered, have_but_not_used, sys.stdout, symbols_sort_key=key)
 
         styles = {"minimal": minimal, "full": full, "small": small, "medium": medium}
         if options.style not in styles:
-            msg = "No known style %r. Valid options: %s." % (
-                options.style,
-                list(styles.keys()),
-            )
+            msg = "No known style %r. Valid options: %s." % (options.style, list(styles.keys()),)
             raise Exception(msg)
         styles[options.style]()
 
