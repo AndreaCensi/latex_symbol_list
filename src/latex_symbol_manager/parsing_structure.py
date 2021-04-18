@@ -97,9 +97,7 @@ def create_section(el, peek, sections, name, description) -> SymbolSection:
 
     definition_order = len(sections)
 
-    section = SymbolSection(
-        name, description, {}, parent, {}, el.where, definition_order, attrs
-    )
+    section = SymbolSection(name, description, {}, parent, {}, el.where, definition_order, attrs)
     sections[section.name] = section
 
     if parent is not None:
@@ -143,9 +141,7 @@ def load_command(peek, el, current_section, symbols):
     for k, v in list(current_section.attrs.items()):
         ok_to_disagree = [SEE_ALSO]
         if k in other and other[k] != v and not k in ok_to_disagree:
-            warning(
-                "Note: tag %r = %r disagrees with section (%r)" % (k, other[k], v), el
-            )
+            warning("Note: tag %r = %r disagrees with section (%r)" % (k, other[k], v), el)
         else:
             other[k] = v
 
@@ -170,9 +166,7 @@ def load_command(peek, el, current_section, symbols):
 
 def load_attributes(peek, known, stop_on=("section",)):
     attrs = {}
-    while isinstance(peek.lookahead(0), SpecialComment) and not (
-        peek.lookahead(0).tag in stop_on
-    ):
+    while isinstance(peek.lookahead(0), SpecialComment) and not (peek.lookahead(0).tag in stop_on):
         sc = next(peek)
         if not sc.tag in KNOWN_TAGS_SYMBOLS:
             warning("Found strange tag %r." % sc.tag, sc)

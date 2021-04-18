@@ -7,9 +7,7 @@ import sys
 def main():
     parser = OptionParser()
 
-    parser.add_option(
-        "--include", help="Sections to include (comma separated)", default="all"
-    )
+    parser.add_option("--include", help="Sections to include (comma separated)", default="all")
 
     parser.add_option("--blue", default="", help="Color these in blue")
     parser.add_option("--red", default="", help="Color these in red")
@@ -39,9 +37,7 @@ def main():
             if x == "all":
                 lx.extend(list(sections.values()))
             if not lx:
-                raise Exception(
-                    "Section %s not found in %s" % (x, list(sections.keys()))
-                )
+                raise Exception("Section %s not found in %s" % (x, list(sections.keys())))
 
             l.extend(lx)
         return l

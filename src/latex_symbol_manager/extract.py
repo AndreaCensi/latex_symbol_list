@@ -30,9 +30,7 @@ def lsm_extract_main():
     try:
         sections, symbols = parse_all_sections_symbols(sources)
 
-        logger.info(
-            "Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols))
-        )
+        logger.info("Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols)))
         if not sections or not symbols:
             raise Exception("Not enough data found.")
 

@@ -13,9 +13,7 @@ from .structures import NOMENC_EXCLUDE, SEE_ALSO, SORT, SymbolSection
 
 def nomenc_main(args):
     parser = OptionParser()
-    parser.add_option(
-        "--only", help="YAML file containing the symbols" "that must be included."
-    )
+    parser.add_option("--only", help="YAML file containing the symbols" "that must be included.")
     parser.add_option("-v", "--verbose", default=False, action="store_true")
 
     (options, args) = parser.parse_args(args)  # @UnusedVariable
@@ -62,9 +60,7 @@ def order_sections(a: Dict[str, object]) -> Dict[str, object]:
     return result
 
 
-def create_table_nomenclature(
-    only, sections, output, symbols_sort_key=lambda x: x.symbol.lower()
-):
+def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x: x.symbol.lower()):
     sections = list(sections.values())
 
     def warn(ss, also_log=True):
@@ -79,8 +75,7 @@ def create_table_nomenclature(
                 symbols = [
                     v
                     for _, v in section.symbols.items()
-                    if (NOMENC_EXCLUDE not in v.other)  # and (_ in only)
-                    and (v.nomenclature or v.nargs == 0)
+                    if (NOMENC_EXCLUDE not in v.other) and (v.nomenclature or v.nargs == 0)  # and (_ in only)
                 ]
 
                 if (not symbols) and (not section.subs):
@@ -146,9 +141,7 @@ def create_table_nomenclature(
                             row.cell_tex("")
 
 
-def print_nomenclature(
-    symbols, sections: Dict[str, SymbolSection], stream, skip_empty=True
-):
+def print_nomenclature(symbols, sections: Dict[str, SymbolSection], stream, skip_empty=True):
     def warn(ss, also_log=True):
         stream.write("%% %s\n" % ss)
         if also_log:

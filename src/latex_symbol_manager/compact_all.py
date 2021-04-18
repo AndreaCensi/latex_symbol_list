@@ -13,9 +13,7 @@ def main():
 
     parser.add_option("--color", help="Use this color", default=None)
 
-    parser.add_option(
-        "--markfirst", help="Mark first command", default=False, action="store_true"
-    )
+    parser.add_option("--markfirst", help="Mark first command", default=False, action="store_true")
 
     (options, args) = parser.parse_args()  # @UnusedVariable
 
@@ -68,9 +66,7 @@ def main():
 
                     filters.append(mark_first)
 
-                    sys.stdout.write(
-                        "\\newbool{%s}\\setbool{%s}{false}\n" % (boolname, boolname)
-                    )
+                    sys.stdout.write("\\newbool{%s}\\setbool{%s}{false}\n" % (boolname, boolname))
 
             def wrapper(x):
                 for f in filters:

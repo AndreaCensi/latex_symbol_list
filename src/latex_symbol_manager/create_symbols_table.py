@@ -141,7 +141,10 @@ def create_table(
 
 
 def create_table_minimal(
-    sections, unused_symbols: Set[str], output, symbols_sort_key=lambda x: x.symbol.lower(),
+    sections,
+    unused_symbols: Set[str],
+    output,
+    symbols_sort_key=lambda x: x.symbol.lower(),
 ):
     with latex_fragment(output) as fragment:
         with fragment.longtable(["c", "l"]) as table:
@@ -178,14 +181,22 @@ def main():
     parser = OptionParser()
     parser.add_option("--only", help="YAML file containing the symbols" "that must be included.")
     parser.add_option(
-        "--sort_sections_alpha", help="Sort sections alphabetically", default=False, action="store_true",
+        "--sort_sections_alpha",
+        help="Sort sections alphabetically",
+        default=False,
+        action="store_true",
     )
 
     parser.add_option(
-        "--verbose", default=False, action="store_true",
+        "--verbose",
+        default=False,
+        action="store_true",
     )
     parser.add_option(
-        "--sort_symbols_alpha", help="Sort symbols alphabetically", default=False, action="store_true",
+        "--sort_symbols_alpha",
+        help="Sort symbols alphabetically",
+        default=False,
+        action="store_true",
     )
 
     parser.add_option("--style", help="Type of table", default="full")
@@ -286,7 +297,10 @@ def main():
 
         styles = {"minimal": minimal, "full": full, "small": small, "medium": medium}
         if options.style not in styles:
-            msg = "No known style %r. Valid options: %s." % (options.style, list(styles.keys()),)
+            msg = "No known style %r. Valid options: %s." % (
+                options.style,
+                list(styles.keys()),
+            )
             raise Exception(msg)
         styles[options.style]()
 

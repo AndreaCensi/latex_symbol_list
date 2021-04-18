@@ -72,9 +72,10 @@ class Symbol(yaml.YAMLObject):
             else:
                 params = "{%s}{%s}" % (cmd, tex)
 
-            s = (
-                "\\ifdefined%s%%\n  \\renewcommand%s%%\n\\else%%\n  "
-                "\\newcommand%s%%\n\\fi\n" % (cmd, params, params)
+            s = "\\ifdefined%s%%\n  \\renewcommand%s%%\n\\else%%\n  " "\\newcommand%s%%\n\\fi\n" % (
+                cmd,
+                params,
+                params,
             )
             return s
 
