@@ -16,7 +16,7 @@ bump:
 upload:
 	aido-check-not-dirty
 	aido-check-tagged
-	aido-check-need-upload --package LatexSymbolManager make upload-do
+	aido-check-need-upload --package LatexSymbolManager-z7 make upload-do
 
 upload-do:
 	rm -f dist/*
@@ -27,7 +27,7 @@ upload-do:
 	devpi upload --verbose dist/*
 
 black:
-	black -l 110 --target-version py37 src
+	black -l 110 --target-version py38 src
 
 install-deps:
 	pip3 install --user shyaml
@@ -89,4 +89,4 @@ coverage-combine:
 docs:
 	sphinx-build src $(out)/docs
         
-# sigil 290c9479a4b646184f85e00a879c7e1c
+# sigil 3b0ca45416c7ffc496629d5c6ff3c0b0
