@@ -2,7 +2,7 @@ jobs:
   test-3.8-production:
     docker:
     - {image: python:3.8}
-    environment: {COLUMNS: '160', COVER_PACKAGES: 'latex_symbol_manager_tests,latex_symbol_manager,latex_symbol_manager.select_subset,latex_symbol_manager.symbol,latex_symbol_manager.nomenc,latex_symbol_manager.lookahead,latex_symbol_manager.extract,latex_symbol_manager.find_commands,latex_symbol_manager.parsing,latex_symbol_manager.structures,latex_symbol_manager.col_logging,latex_symbol_manager.create_symbols_table,latex_symbol_manager.parsing_structure,latex_symbol_manager.interface,latex_symbol_manager.collect,latex_symbol_manager.find_equations,latex_symbol_manager.compact_all,latex_symbol_manager.script_utils',
+    environment: {COLUMNS: '160', COVER_PACKAGES: 'latex_symbol_manager,latex_symbol_manager_tests',
       PATH: /root/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin,
       TEST_PACKAGES: latex_symbol_manager_tests}
     steps:
@@ -45,7 +45,7 @@ jobs:
   test-3.8-staging:
     docker:
     - {image: python:3.8}
-    environment: {COLUMNS: '160', COVER_PACKAGES: 'latex_symbol_manager_tests,latex_symbol_manager,latex_symbol_manager.select_subset,latex_symbol_manager.symbol,latex_symbol_manager.nomenc,latex_symbol_manager.lookahead,latex_symbol_manager.extract,latex_symbol_manager.find_commands,latex_symbol_manager.parsing,latex_symbol_manager.structures,latex_symbol_manager.col_logging,latex_symbol_manager.create_symbols_table,latex_symbol_manager.parsing_structure,latex_symbol_manager.interface,latex_symbol_manager.collect,latex_symbol_manager.find_equations,latex_symbol_manager.compact_all,latex_symbol_manager.script_utils',
+    environment: {COLUMNS: '160', COVER_PACKAGES: 'latex_symbol_manager,latex_symbol_manager_tests',
       PATH: /root/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin,
       TEST_PACKAGES: latex_symbol_manager_tests}
     steps:
@@ -99,4 +99,4 @@ workflows:
           branches: {ignore: /z7-stage.*/}
   version: 2
 
-# sigil 7e346ee0b3b47820ce7bec0faa693d08
+# sigil 17e674650d62a7e88c686880bd1178ab
