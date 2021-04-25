@@ -117,12 +117,16 @@ def load_command(peek, el, current_section, symbols):
         logger.warn("TODO (%s): %s" % (el.command, other[TODO]))
 
     if NOMENC in other:
-        parts = other["nomenc"].split(":")
-        if len(parts) != 2:
-            err = "Too many elements in %r" % other[NOMENC]
-            raise ParsingError(err, el.where)
-        label, text = parts
-        nomenc = NomenclatureEntry(label, text)
+        n = other[NOMENC].strip()
+        if not n:
+            nomenc = None
+        else:
+            parts = n.split(":")
+            if len(parts) != 2:
+                err = f"Too many elements in {other[NOMENC]!r} -> {parts!r}"
+                raise ParsingError(err, el.where)
+            label, text = parts
+            nomenc = NomenclatureEntry(label, text)
     else:
         nomenc = None
 
