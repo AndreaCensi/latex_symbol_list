@@ -88,5 +88,7 @@ coverage-combine:
 
 docs:
 	sphinx-build src $(out)/docs
+	
+-include extra.mk
         
-# sigil 5cd9e765feafa3f1146feb019449b653
+# sigil 1a59110ee26b6162c677ba5297d45f30
