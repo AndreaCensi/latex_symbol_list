@@ -10,4 +10,7 @@ s = r"""
 
 
 def test1():
+    from latex_symbol_manager import logger
+
+    _ = logger
     pass
