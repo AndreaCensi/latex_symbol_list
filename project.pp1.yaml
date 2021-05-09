@@ -1,48 +1,46 @@
 ---
-package_name         : LatexSymbolManager-z7
-srcdir               : src
-version_file         : '1'
-modules              :
-- latex_symbol_manager
+package_name: LatexSymbolManager-z7
+srcdir: src
+version_file: '1'
+modules:
+    - latex_symbol_manager
 
-install_requires     :
-- latex-gen-z7
-- PyYAML
-- zuper-typing-z7
-- zuper-commons-z7
-install_conflicts    : [PACKAGENAME-*]
-tests_require        : []
+install_requires:
+    - latex-gen-z7
+    - PyYAML
+    - zuper-typing-z7
+    - zuper-commons-z7
+install_conflicts: [PACKAGENAME-*]
+tests_require: []
 
-console_scripts      :
-  lsm_test1: latex_symbol_manager.parsing:main
-  lsm_test2: latex_symbol_manager.parsing_structure:main
-  lsm_table: latex_symbol_manager.create_symbols_table:main
-  lsm_symbols: latex_symbol_manager.compact_all:main
-  lsm_extract: latex_symbol_manager.extract:lsm_extract_main
-  lsm_nomenc: latex_symbol_manager.nomenc:main
-  lsm_collect: latex_symbol_manager.collect:main
-  lsm_equations: latex_symbol_manager.find_equations:main
+console_scripts:
+    lsm_test1: latex_symbol_manager.parsing:main
+    lsm_test2: latex_symbol_manager.parsing_structure:main
+    lsm_table: latex_symbol_manager.create_symbols_table:main
+    lsm_symbols: latex_symbol_manager.compact_all:main
+    lsm_extract: latex_symbol_manager.extract:lsm_extract_main
+    lsm_nomenc: latex_symbol_manager.nomenc:main
+    lsm_collect: latex_symbol_manager.collect:main
+    lsm_equations: latex_symbol_manager.find_equations:main
 
 
 
-nose                 :
-  modules:
-  - '*_tests'
-  python_versions:
-  - '3.7'
-  - '3.8'
+nose:
+    modules:
+        - '*_tests'
 
-pypi                 :
-  upload: []
 
-circleci             :
-  active: true
-  test_python_versions: ['3.8']
+pypi:
+    upload: []
+
+circleci:
+    active: true
+    test_python_versions: ['3.8']
 
 python_syntax_version: '3.8'
 
-url                  : https://github.com/zupermind/PACKAGENAME
-author               : ''
-author_email         : info@zupermind.com
-short_description    : ''
-full_description     : ''
+url: https://github.com/zupermind/PACKAGENAME
+author: Andrea Censi
+author_email: info@zupermind.com
+short_description: ''
+full_description: ''
