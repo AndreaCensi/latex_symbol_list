@@ -66,7 +66,7 @@ clean:
 
 test:  
 	mkdir -p  $(tr)
-	DISABLE_CONTRACTS=1 nosetests $(extra) $(coverage)  latex_symbol_manager_tests  -v --nologcapture $dock(xunit)
+	DISABLE_CONTRACTS=1 nosetests $(extra) $(coverage)  latex_symbol_manager_tests  -v --nologcapture $(xunit)
 
 
 test-parallel:  
@@ -87,4 +87,4 @@ docs:
 	
 -include extra.mk
         
-# sigil 7d9b79aecb7af29187e91ea85fc323b0
+# sigil 5d3b4bd4951827724df7248daa3e2c74
