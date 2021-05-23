@@ -80,16 +80,7 @@ jobs:
         when: always
         path: out/docs
         destination: docs
-    - run:
-        background: true
-        name: services
-        command: |
-          TARGET=services
-          if make -n $TARGET ; then
-              make $TARGET
-          else
-              echo "Target $TARGET not defined"
-          fi
+
     - run:
         name: pre-circle-tests
         command: |
@@ -99,7 +90,6 @@ jobs:
           else
               echo "Target $TARGET not defined"
           fi
-
 
       # - run:
       #     name: Notebooks
@@ -225,16 +215,7 @@ jobs:
         when: always
         path: out/docs
         destination: docs
-    - run:
-        background: true
-        name: services
-        command: |
-          TARGET=services
-          if make -n $TARGET ; then
-              make $TARGET
-          else
-              echo "Target $TARGET not defined"
-          fi
+
     - run:
         name: pre-circle-tests
         command: |
@@ -244,7 +225,6 @@ jobs:
           else
               echo "Target $TARGET not defined"
           fi
-
 
       # - run:
       #     name: Notebooks
@@ -305,4 +285,4 @@ jobs:
           bash <(curl -s https://codecov.io/bash)
     resource_class: medium+
 
-# sigil ca1910cc1805956d892b5b7a36fc819c
+# sigil ef16dbfe79d92bbe3bf7cc0709c981d0
