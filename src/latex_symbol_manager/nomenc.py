@@ -1,31 +1,40 @@
 import sys
 from optparse import OptionParser
-from typing import Dict
+from typing import Dict, List
 
 import yaml
-from latex_gen import latex_fragment
 
-from latex_symbol_manager.script_utils import wrap_script_entry_point
-from .interface import parse_all_sections_symbols
+from latex_gen import latex_fragment
+from latex_symbol_manager.symbol import Symbol
+from zuper_ipce import object_from_ipce
 from . import logger
+from .find_commands import Usage
+from .interface import parse_all_sections_symbols
+from .script_utils import wrap_script_entry_point
 from .structures import NOMENC_EXCLUDE, SEE_ALSO, SORT, SymbolSection
 
 
 def nomenc_main(args):
     parser = OptionParser()
-    parser.add_option("--only", help="YAML file containing the symbols" "that must be included.")
+    parser.add_option("--only", help="YAML file containing the symbols that must be included.")
     parser.add_option("-v", "--verbose", default=False, action="store_true")
 
     (options, args) = parser.parse_args(args)  # @UnusedVariable
 
     sections, symbols = parse_all_sections_symbols(args)
-    logger.info("Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols)))
+    logger.info(f"Loaded {len(sections)} sections with {len(symbols)} symbols.\n")
     if not sections or not symbols:
         raise Exception("Not enough data found.")
 
     if options.only:
         with open(options.only) as f:
-            only = yaml.load(f, Loader=yaml.Loader)
+            only_yaml = yaml.load(f, Loader=yaml.Loader)
+        only: Dict[str, List[Usage]] = object_from_ipce(only_yaml, Dict[str, List[Usage]])
+
+        v: Symbol
+        for k, v in symbols.items():
+            if k in only:
+                v.usages = only[k]
 
         have = set(symbols.keys())
         used = set(only)
@@ -60,7 +69,8 @@ def order_sections(a: Dict[str, object]) -> Dict[str, object]:
     return result
 
 
-def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x: x.symbol.lower()):
+def create_table_nomenclature(only: Dict[str, Symbol], sections, output,
+                              symbols_sort_key=lambda x: x.symbol.lower()):
     sections = list(sections.values())
 
     def warn(ss, also_log=True):
@@ -68,8 +78,9 @@ def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x:
         if also_log:
             logger.warn(ss)
 
+    s: Symbol
     with latex_fragment(output) as fragment:
-        with fragment.longtable(["l", "l", "l", "r"]) as table:
+        with fragment.longtable(["l", "l",  "l", "r", "l"]) as table:
 
             for section in sections:
                 symbols = [
@@ -83,22 +94,23 @@ def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x:
 
                 with table.row() as row:
                     if section.description is None:
-                        s = section.name
+                        sct = section.name
                     else:
-                        s = section.description
+                        sct = section.description
 
-                    if not s:
-                        s = "-"
+                    if not sct:
+                        sct = "-"
 
                     if section.parent is None:
-                        row.multicolumn_tex(4, "l", "\\nomencsectionname{%s}" % s)
+                        row.multicolumn_tex(4, "l", f"\\nomencsectionname{{{sct}}}")
                     else:
-                        row.multicolumn_tex(4, "c", "\\nomencsubsectionname{%s}" % s)
+                        row.multicolumn_tex(4, "c", f"\\nomencsubsectionname{{{sct}}}")
 
                 if section.parent is None:
                     table.hline()
 
                 # symbols.sort(key=symbols_sort_key)
+
                 for s in symbols:
                     # if s.nargs != 0:  # do not write out thes
                     #     continue
@@ -139,6 +151,13 @@ def create_table_nomenclature(only, sections, output, symbols_sort_key=lambda x:
                         else:
                             row.cell_tex("")
                             row.cell_tex("")
+
+                        if s.usages:
+                            notnull = [_ for _ in s.usages if _.last_label]
+                            if notnull:
+                                t = '\\cref{%s}' % notnull[0].last_label
+
+                                row.cell_tex(f'{t}')
 
 
 def print_nomenclature(symbols, sections: Dict[str, SymbolSection], stream, skip_empty=True):

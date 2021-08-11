@@ -1,7 +1,7 @@
 import sys
 import traceback
 from optparse import OptionParser
-from typing import Dict, Set
+from typing import Dict, List, Set
 
 import yaml
 
@@ -14,8 +14,9 @@ from latex_gen import (
     texttt,
     verbatim_soft,
 )
+from zuper_ipce import object_from_ipce
 from . import logger
-from .find_commands import find_all_commands_in_string
+from .find_commands import find_all_commands_in_string, Usage
 from .interface import parse_all_sections_symbols
 from .structures import NO_INLINE, NO_SUMMARY
 from .symbol import Symbol
@@ -25,8 +26,14 @@ def raw_appearance(s):
     return color_rgb(texttt(s), [0.5, 0.5, 0.5])
 
 
-def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_size, is_unused: bool):
+def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_size: str, is_unused: bool):
     x = "\\unused " if is_unused else ""
+
+    firstusage = ''
+    if s.usages:
+        notnull = [_ for _ in s.usages if _.last_label]
+        if notnull:
+            firstusage = '\\cref{%s}' % notnull[0].last_label
 
     used_example = False
 
@@ -42,10 +49,15 @@ def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_
                 row.cell_tex(example)
             else:
                 row.cell_tex("(nosummary)")
+
             if write_desc:
                 row.cell_tex(x + s.desc)
             else:
-                row.cell_tex()
+                row.cell_tex(x)
+
+            row.cell_tex(firstusage)
+
+
     else:
         # args = ",".join(["..."] * s.nargs)
 
@@ -71,11 +83,10 @@ def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_
             row.cell_tex(example)
             if write_desc:
                 row.cell_tex(x + s.desc)
-
             else:
-                row.cell_tex()
+                row.cell_tex(x)
 
-    if s.example and write_examples and not (used_example):
+    if s.example and write_examples and not used_example:
         with table.row() as row:
             # row.multicolumn_tex(3, "l", head1 + " " + head2)
             row.cell_tex()
@@ -99,12 +110,13 @@ def create_table(
     output,
     write_examples=True,
     write_desc=True,
-    example_size="5cm",
+    example_size="3cm",
     symbols_sort_key=lambda x: x.symbol.lower(),
 ):
+    # logger.info(unused_symbols=unused_symbols)
     with latex_fragment(output) as fragment:
 
-        with fragment.longtable(["l", "l", "l"]) as table:
+        with fragment.longtable(["l", "l", "l", "l"]) as table:
 
             # table.row_tex('Symbol', '\\TeX command', 'description')
             # table.hline()
@@ -179,7 +191,7 @@ def get_symbols_used_in_definitions(symbols: Dict[str, Symbol]) -> Set[str]:
 
 def main():
     parser = OptionParser()
-    parser.add_option("--only", help="YAML file containing the symbols" "that must be included.")
+    parser.add_option("--only", help="YAML file containing the symbols that must be included.")
     parser.add_option(
         "--sort_sections_alpha",
         help="Sort sections alphabetically",
@@ -210,12 +222,18 @@ def main():
 
         if options.only:
             with open(options.only) as f:
-                only = yaml.load(f, Loader=yaml.Loader)
+                only_yaml = yaml.load(f, Loader=yaml.Loader)
+            only = object_from_ipce(only_yaml, Dict[str, List[Usage]])
 
             more = get_symbols_used_in_definitions(symbols)
             if options.verbose:
                 logger.info(f"found more in definitions", more=more)
             have = set(symbols.keys())
+
+            v: Symbol
+            for k, v in symbols.items():
+                if k in only:
+                    v.usages = only[k]
 
             used = set(only)
             used.update(more)

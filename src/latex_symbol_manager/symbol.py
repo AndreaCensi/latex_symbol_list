@@ -1,4 +1,5 @@
 import yaml
+from typing import Dict, List
 
 
 class NomenclatureEntry(yaml.YAMLObject):
@@ -15,7 +16,7 @@ class Symbol(yaml.YAMLObject):
 
     def __init__(
         self,
-        symbol,
+        symbol: str,
         tex,
         definition_order,
         tag=None,
@@ -25,7 +26,8 @@ class Symbol(yaml.YAMLObject):
         nargs=0,  # @ReservedAssignment
         where=None,
         nomenclature=None,
-        other={},
+        other:Dict = None,
+        usages: List = None,
     ):
         self.symbol = symbol
         self.tex = tex
@@ -37,7 +39,8 @@ class Symbol(yaml.YAMLObject):
         self.tag = tag
         self.where = where
         self.nomenclature = nomenclature
-        self.other = other
+        self.other = other or {}
+        self.usages = usages or []
 
     def __repr__(self):
         return "Symbol(%r, %r, %r, %r, %r, %r, %r)" % (

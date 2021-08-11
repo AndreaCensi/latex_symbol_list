@@ -1,7 +1,11 @@
+from collections import defaultdict
 from optparse import OptionParser
+from typing import Dict, List
+
 import yaml
 
-from .find_commands import find_all_commands
+from zuper_ipce import IESO, ipce_from_object
+from .find_commands import find_all_commands, Usage
 
 usage = """ 
 
@@ -17,13 +21,24 @@ def main():
     (options, args) = parser.parse_args()  # @UnusedVariable
     filenames = args
 
-    symbols = set()
+    filenames = sorted(filenames)
+    symbols: Dict[str, List[Usage]] = defaultdict(list)
     for filename in filenames:
-        symbols.update(find_all_commands(filename))
-    what = list(symbols)
+        fs = find_all_commands(filename)
+        for k, v in fs.items():
+            symbols[k].extend(v)
+    # print(symbols)
+    # what = list(symbols)
+
+
     print(("# YAML dump of symbols found in files %s" % filenames))
     print("# ")
-    print((yaml.dump(what)))
+    # print((yaml.dump(what)))
+
+
+    a = ipce_from_object(symbols, ieso=IESO(False, False))
+    print((yaml.dump(a)))
+
 
 
 if __name__ == "__main__":

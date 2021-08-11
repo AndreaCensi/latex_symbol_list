@@ -1,9 +1,9 @@
 from optparse import OptionParser
 
-from latex_symbol_manager.interface import parse_all_sections_symbols
-from latex_symbol_manager.script_utils import wrap_script_entry_point
 from . import logger
 from .find_commands import find_all_commands
+from .interface import parse_all_sections_symbols
+from .script_utils import wrap_script_entry_point
 
 __all__ = ["lsm_extract_main"]
 
@@ -30,13 +30,13 @@ def lsm_extract_main():
     try:
         sections, symbols = parse_all_sections_symbols(sources)
 
-        logger.info("Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols)))
+        logger.info(f"Loaded {len(sections)} sections with {len(symbols)} symbols.")
         if not sections or not symbols:
             raise Exception("Not enough data found.")
 
         logger.info("Now looking for symbols")
         commands = find_all_commands(main)
-        logger.info("I found %d commands" % len(commands))
+        logger.info(f"I found {len(commands)} commands")
 
         done = set()
         todo = set(commands)
