@@ -1,6 +1,6 @@
 import logging
 
-__version__ = "7.1.2108140953"
+__version__ = "devel"
 from zuper_commons import ZLogger
 
 logger = ZLogger(__name__)
