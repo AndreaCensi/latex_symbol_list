@@ -69,8 +69,9 @@ def order_sections(a: Dict[str, object]) -> Dict[str, object]:
     return result
 
 
-def create_table_nomenclature(only: Dict[str, Symbol], sections, output,
-                              symbols_sort_key=lambda x: x.symbol.lower()):
+def create_table_nomenclature(
+    only: Dict[str, Symbol], sections, output, symbols_sort_key=lambda x: x.symbol.lower()
+):
     sections = list(sections.values())
 
     def warn(ss, also_log=True):
@@ -80,7 +81,12 @@ def create_table_nomenclature(only: Dict[str, Symbol], sections, output,
 
     s: Symbol
     with latex_fragment(output) as fragment:
-        with fragment.longtable(["l", "l",  "l", "r", "l"]) as table:
+        with fragment.longtable(["l", "p{6cm}", "l", "r", "l"]) as table:
+            with table.row() as row:
+                row.cell_tex("symbol")
+                row.cell_tex("meaning")
+                row.cell_tex("defined in")
+                row.cell_tex("first use")
 
             for section in sections:
                 symbols = [
@@ -155,9 +161,9 @@ def create_table_nomenclature(only: Dict[str, Symbol], sections, output,
                         if s.usages:
                             notnull = [_ for _ in s.usages if _.last_label]
                             if notnull:
-                                t = '\\cref{%s}' % notnull[0].last_label
+                                t = "\\cref{%s}" % notnull[0].last_label
 
-                                row.cell_tex(f'{t}')
+                                row.cell_tex(f"{t}")
 
 
 def print_nomenclature(symbols, sections: Dict[str, SymbolSection], stream, skip_empty=True):

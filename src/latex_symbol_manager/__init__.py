@@ -1,12 +1,8 @@
-import logging
-
 __version__ = "7.2"
+
 from zuper_commons import ZLogger
 
 logger = ZLogger(__name__)
-# logging.basicConfig()
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
 import zuper_typing
 
 _ = zuper_typing
