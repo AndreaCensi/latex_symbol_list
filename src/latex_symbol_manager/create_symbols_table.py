@@ -14,6 +14,7 @@ from latex_gen import (
     texttt,
     verbatim_soft,
 )
+from latex_gen.tabular import Tabular
 from zuper_ipce import object_from_ipce
 from . import logger
 from .find_commands import find_all_commands_in_string, Usage
@@ -26,7 +27,7 @@ def raw_appearance(s):
     return color_rgb(texttt(s), [0.5, 0.5, 0.5])
 
 
-def write_symbol_rows(s, table, write_examples: bool, write_desc: bool, example_size: str, is_unused: bool):
+def write_symbol_rows(s, table: Tabular, write_examples: bool, write_desc: bool, example_size: str, is_unused: bool):
     x = "\\unused " if is_unused else ""
 
     firstusage = ''
@@ -110,27 +111,28 @@ def create_table(
     output,
     write_examples=True,
     write_desc=True,
-    example_size="3cm",
+    example_size="5.5cm",
     symbols_sort_key=lambda x: x.symbol.lower(),
 ):
     # logger.info(unused_symbols=unused_symbols)
     with latex_fragment(output) as fragment:
 
-        with fragment.longtable(["l", "l", "l", "l"]) as table:
+        with fragment.longtable(["l", "p{1cm}", "p{5cm}", "l", "l"]) as table:
 
-            # table.row_tex('Symbol', '\\TeX command', 'description')
-            # table.hline()
-            # table.hline()
+            table.row_tex('\\textbf{command}', '\\textbf{result}', '\\textbf{description}', '\\textbf{definition}', '\\textbf{first use}')
+            table.hline()
+            table.hline()
+            table.endhead()
 
             for section in sections:
-                table.row_tex("", "", "")
+                table.row_tex("", "", "", "", "")
 
                 with table.row() as row:
                     head1 = raw_appearance(latex_escape(section.name))
                     head2 = emph(section.description)
 
                     # row.cell_tex(head1)
-                    row.multicolumn_tex(3, "l", head1 + " " + head2)
+                    row.multicolumn_tex(5, "l", head1 + " " + head2)
 
                 table.hline()
                 if section.parent is None:
@@ -211,7 +213,7 @@ def main():
         action="store_true",
     )
 
-    parser.add_option("--style", help="Type of table", default="full")
+    parser.add_option("--style", help="Type of table (full*, minimal, small, medium)", default="full")
 
     # TODO: flat option
 

@@ -3,8 +3,8 @@ from optparse import OptionParser
 from typing import Dict, List
 
 import yaml
-
 from zuper_ipce import IESO, ipce_from_object
+
 from .find_commands import find_all_commands, Usage
 
 usage = """ 
@@ -30,15 +30,12 @@ def main():
     # print(symbols)
     # what = list(symbols)
 
-
     print(("# YAML dump of symbols found in files %s" % filenames))
     print("# ")
     # print((yaml.dump(what)))
 
-
     a = ipce_from_object(symbols, ieso=IESO(False, False))
     print((yaml.dump(a)))
-
 
 
 if __name__ == "__main__":

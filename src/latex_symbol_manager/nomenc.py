@@ -1,30 +1,36 @@
 import sys
 from optparse import OptionParser
-from typing import Dict, List
+from typing import Dict, List, Literal
 
 import yaml
-
 from latex_gen import latex_fragment
-from latex_symbol_manager.symbol import Symbol
 from zuper_ipce import object_from_ipce
+
 from . import logger
 from .find_commands import Usage
 from .interface import parse_all_sections_symbols
 from .script_utils import wrap_script_entry_point
-from .structures import NOMENC_EXCLUDE, SEE_ALSO, SORT, SymbolSection
+from .structures import NOMENC_EXCLUDE, SEE_ALSO
+from .symbol import Symbol
 
 
 def nomenc_main(args):
     parser = OptionParser()
     parser.add_option("--only", help="YAML file containing the symbols that must be included.")
+
+    parser.add_option("--style", default="small", help="One of  (small, medium)")
     parser.add_option("-v", "--verbose", default=False, action="store_true")
 
     (options, args) = parser.parse_args(args)  # @UnusedVariable
 
+    style = options.style
+    assert style in ('small', 'medium'), style
     sections, symbols = parse_all_sections_symbols(args)
     logger.info(f"Loaded {len(sections)} sections with {len(symbols)} symbols.\n")
     if not sections or not symbols:
         raise Exception("Not enough data found.")
+
+
 
     if options.only:
         with open(options.only) as f:
@@ -51,7 +57,7 @@ def nomenc_main(args):
 
     sections = order_sections(sections)
 
-    create_table_nomenclature(symbols, sections, sys.stdout)
+    create_table_nomenclature(symbols, sections, style, sys.stdout)
 
 
 def order_sections(a: Dict[str, object]) -> Dict[str, object]:
@@ -70,7 +76,7 @@ def order_sections(a: Dict[str, object]) -> Dict[str, object]:
 
 
 def create_table_nomenclature(
-    only: Dict[str, Symbol], sections, output, symbols_sort_key=lambda x: x.symbol.lower()
+    only: Dict[str, Symbol], sections, style: Literal['small', 'medium'], output,  # symbols_sort_key=lambda x: x.symbol.lower()
 ):
     sections = list(sections.values())
 
@@ -81,12 +87,18 @@ def create_table_nomenclature(
 
     s: Symbol
     with latex_fragment(output) as fragment:
-        with fragment.longtable(["l", "p{6cm}", "l", "r", "l"]) as table:
+        with fragment.longtable(["p{2cm}", "p{6cm}", "l", "l"]) as table:
             with table.row() as row:
-                row.cell_tex("symbol")
-                row.cell_tex("meaning")
-                row.cell_tex("defined in")
-                row.cell_tex("first use")
+                row.cell_tex("\\textbf{symbol}")
+                row.cell_tex("\\textbf{meaning}")
+
+                if style == 'medium':
+                    row.cell_tex("\\textbf{defined in}")
+                    row.cell_tex("\\textbf{first use}")
+
+            table.hline()
+            table.hline()
+            table.endhead()
 
             for section in sections:
                 symbols = [
@@ -118,6 +130,7 @@ def create_table_nomenclature(
                 # symbols.sort(key=symbols_sort_key)
 
                 for s in symbols:
+                    is_unused = s.symbol not in only
                     # if s.nargs != 0:  # do not write out thes
                     #     continue
 
@@ -138,114 +151,126 @@ def create_table_nomenclature(
 
                     with table.row() as row:
                         row.cell_tex(label)
-                        if s.symbol not in only:
-                            text = "\\unused " + text
+                        # if is_unused:
+                        #     text = "\\unused " + text
                         row.cell_tex(text)
 
-                        ref = s.other.get(SEE_ALSO, "")
-                        if ref:
-                            if not ":" in ref:
-                                msg = (
-                                    "While considering symbol %s: "
-                                    "Could not find a prefix for reference %r "
-                                    "so aborting because cref might get confused "
-                                    "in a way which is not debuggable" % (s, ref)
-                                )
-                                raise Exception(msg)
-                            row.cell_tex("$\\to$\\cref{%s}" % ref)
-                            row.cell_tex("\\pageref{%s}" % ref)
-                        else:
-                            row.cell_tex("")
-                            row.cell_tex("")
+                        if style == 'medium':
+                            ref = s.other.get(SEE_ALSO, "")
+                            if ref:
+                                if not ":" in ref:
+                                    msg = (
+                                        "While considering symbol %s: "
+                                        "Could not find a prefix for reference %r "
+                                        "so aborting because cref might get confused "
+                                        "in a way which is not debuggable" % (s, ref)
+                                    )
+                                    raise Exception(msg)
+                                row.cell_tex("$\\to$\\cref{%s} on p.\\pageref{%s}" % (ref, ref))
+                                # row.cell_tex("on " % ref)
+                            else:
+                                row.cell_tex("")
+                                # row.cell_tex("")
 
-                        if s.usages:
-                            notnull = [_ for _ in s.usages if _.last_label]
-                            if notnull:
-                                t = "\\cref{%s}" % notnull[0].last_label
+                            if s.usages:
+                                notnull = [_ for _ in s.usages if _.last_label]
+                                if notnull:
+                                    l = notnull[0].last_label
+                                    if ref != l:
+                                        t2 = "p.\\pageref{%s} near~\\cref{%s}" % (l, l)
 
-                                row.cell_tex(f"{t}")
+                                    else:
+                                        t2 = ''
+                                else:
+                                    t2 = ''
+                            else:
+                                t2 = ''
+
+                            if is_unused:
+                                t2 += '\\unused'
+                            row.cell_tex(t2)
 
 
-def print_nomenclature(symbols, sections: Dict[str, SymbolSection], stream, skip_empty=True):
-    def warn(ss, also_log=True):
-        stream.write("%% %s\n" % ss)
-        if also_log:
-            logger.warn(ss)
-
-    groupnames = {}
-    for section_name, section in sections.items():
-        for symbol_id, symbol in section.symbols.items():
-            if symbol_id not in symbols:
-                continue
-            symbol_name = symbol.symbol[1:]
-            if NOMENC_EXCLUDE in symbol.other:
-                warn(
-                    f"Skipping symbol {symbol.symbol} because of {NOMENC_EXCLUDE}",
-                    False,
-                )
-                continue
-
-            if symbol.nomenclature is None:
-                if skip_empty:
-                    warn(f"Skipping symbol {symbol.symbol} because of skip_empty.")
-                    continue
-
-                if symbol.nargs != 0:
-                    warn(f"Skipping symbol {symbol.symbol} because it has args.", False)
-                    continue
-
-                text = symbol.desc
-                label = "$%s$" % symbol.symbol
-            else:
-                text = symbol.nomenclature.text
-                label = "$%s$" % symbol.nomenclature.label
-
-            text = text.strip()
-            # Add period if not there
-            if text and text[-1] != ".":
-                logger.info("Adding period to %r/%r" % (label, text))
-                text += "."
-
-            label = "\\nomencLabel{%s}{%s}" % (symbol_name, label)
-
-            ref = symbol.other.get(SEE_ALSO, "")
-            if ref:
-                if not ":" in ref:
-                    msg = (
-                        "While considering symbol %s: "
-                        "Could not find a prefix for reference %r "
-                        "so aborting because cref might get confused "
-                        "in a way which is not debuggable" % (symbol, ref)
-                    )
-                    raise Exception(msg)
-                text += " \\nomencref{%s}" % ref
-
-            ADDPREFIX = f"symbols-{section_name.replace('/', '-')}"
-            groupnames[ADDPREFIX] = section.description
-            if not SORT in symbol.other:
-                sort_options = f"[{ADDPREFIX}]"
-            else:
-                sort_options = f"[{ADDPREFIX},{symbol.other[SORT]}]"
-
-            if not text:
-                warn("No text for %s" % symbol.symbol)
-                text = "\\nomencMissExplanation{%s}" % symbol_name
-
-            text = "\\nomencText{%s}{%s}{%s}" % (symbol_name, text, ref)
-            s = "\\nomenclature%s{%s}{%s}" % (sort_options, label, text)
-
-            stream.write(s)
-            stream.write("\n")
-
-    # \renewcommand{\nomgroup}[1]{%
-    #  \ifthenelse{\equal{#1}{V}}{\item[\textbf{Variables}]}{%
-    #  \ifthenelse{\equal{#1}{C}}{\item[\textbf{Constants}]}{}}}
-
-    # stream.write('\\renewcommand{\\nomgroup}[1]{%\n')
-    # for k, v in groupnames.items():
-    #     s = '\\ifthenelse{\\equal{#1}}{K}}{\item[\\textbf{V}]}{%\n'
-    #     stream.write(s.replace('K',k).replace('V', v))
-    # stream.write('}}}%\n')
+# def print_nomenclature(symbols, sections: Dict[str, SymbolSection], stream, skip_empty=True):
+#     def warn(ss, also_log=True):
+#         stream.write("%% %s\n" % ss)
+#         if also_log:
+#             logger.warn(ss)
+#
+#     groupnames = {}
+#     for section_name, section in sections.items():
+#         for symbol_id, symbol in section.symbols.items():
+#             if symbol_id not in symbols:
+#                 continue
+#             symbol_name = symbol.symbol[1:]
+#             if NOMENC_EXCLUDE in symbol.other:
+#                 warn(
+#                     f"Skipping symbol {symbol.symbol} because of {NOMENC_EXCLUDE}",
+#                     False,
+#                 )
+#                 continue
+#
+#             if symbol.nomenclature is None:
+#                 if skip_empty:
+#                     warn(f"Skipping symbol {symbol.symbol} because of skip_empty.")
+#                     continue
+#
+#                 if symbol.nargs != 0:
+#                     warn(f"Skipping symbol {symbol.symbol} because it has args.", False)
+#                     continue
+#
+#                 text = symbol.desc
+#                 label = "$%s$" % symbol.symbol
+#             else:
+#                 text = symbol.nomenclature.text
+#                 label = "$%s$" % symbol.nomenclature.label
+#
+#             text = text.strip()
+#             # Add period if not there
+#             if text and text[-1] != ".":
+#                 logger.info("Adding period to %r/%r" % (label, text))
+#                 text += "."
+#
+#             label = "\\nomencLabel{%s}{%s}" % (symbol_name, label)
+#
+#             ref = symbol.other.get(SEE_ALSO, "")
+#             if ref:
+#                 if not ":" in ref:
+#                     msg = (
+#                         "While considering symbol %s: "
+#                         "Could not find a prefix for reference %r "
+#                         "so aborting because cref might get confused "
+#                         "in a way which is not debuggable" % (symbol, ref)
+#                     )
+#                     raise Exception(msg)
+#                 text += " \\nomencref{%s}" % ref
+#
+#             ADDPREFIX = f"symbols-{section_name.replace('/', '-')}"
+#             groupnames[ADDPREFIX] = section.description
+#             if not SORT in symbol.other:
+#                 sort_options = f"[{ADDPREFIX}]"
+#             else:
+#                 sort_options = f"[{ADDPREFIX},{symbol.other[SORT]}]"
+#
+#             if not text:
+#                 warn("No text for %s" % symbol.symbol)
+#                 text = "\\nomencMissExplanation{%s}" % symbol_name
+#
+#             text = "\\nomencText{%s}{%s}{%s}" % (symbol_name, text, ref)
+#             s = "\\nomenclature%s{%s}{%s}" % (sort_options, label, text)
+#
+#             stream.write(s)
+#             stream.write("\n")
+#
+#     # \renewcommand{\nomgroup}[1]{%
+#     #  \ifthenelse{\equal{#1}{V}}{\item[\textbf{Variables}]}{%
+#     #  \ifthenelse{\equal{#1}{C}}{\item[\textbf{Constants}]}{}}}
+#
+#     # stream.write('\\renewcommand{\\nomgroup}[1]{%\n')
+#     # for k, v in groupnames.items():
+#     #     s = '\\ifthenelse{\\equal{#1}}{K}}{\item[\\textbf{V}]}{%\n'
+#     #     stream.write(s.replace('K',k).replace('V', v))
+#     # stream.write('}}}%\n')
 
 
 def main():

@@ -7,6 +7,7 @@ NOMENC = "nomenc"
 NOMENC_EXCLUDE = "nomenc-exclude"
 TODO = "todo"
 SEE_ALSO = "def"
+IF = "if"
 SORT = "def"
 NOT_FINAL = "notfinal"
 DEPRECATED = "deprecated"
@@ -22,6 +23,7 @@ KNOWN_TAGS_SYMBOLS = [
     NOT_FINAL,
     TODO,
     NO_INLINE,
+    IF,
 ]
 KNOWN_TAGS_SECTIONS = [NOMENC_EXCLUDE, NOT_FINAL, DEPRECATED]
 
