@@ -24,13 +24,11 @@ def nomenc_main(args):
     (options, args) = parser.parse_args(args)  # @UnusedVariable
 
     style = options.style
-    assert style in ('small', 'medium'), style
+    assert style in ("small", "medium"), style
     sections, symbols = parse_all_sections_symbols(args)
     logger.info(f"Loaded {len(sections)} sections with {len(symbols)} symbols.\n")
     if not sections or not symbols:
         raise Exception("Not enough data found.")
-
-
 
     if options.only:
         with open(options.only) as f:
@@ -76,7 +74,10 @@ def order_sections(a: Dict[str, object]) -> Dict[str, object]:
 
 
 def create_table_nomenclature(
-    only: Dict[str, Symbol], sections, style: Literal['small', 'medium'], output,  # symbols_sort_key=lambda x: x.symbol.lower()
+    only: Dict[str, Symbol],
+    sections,
+    style: Literal["small", "medium"],
+    output,  # symbols_sort_key=lambda x: x.symbol.lower()
 ):
     sections = list(sections.values())
 
@@ -87,12 +88,13 @@ def create_table_nomenclature(
 
     s: Symbol
     with latex_fragment(output) as fragment:
-        with fragment.longtable(["p{2cm}", "p{6cm}", "l", "l"]) as table:
+        size_second = "p{6cm}" if style == "medium" else "p{10cm}"
+        with fragment.longtable(["p{2cm}", size_second, "l", "l"]) as table:
             with table.row() as row:
                 row.cell_tex("\\textbf{symbol}")
                 row.cell_tex("\\textbf{meaning}")
 
-                if style == 'medium':
+                if style == "medium":
                     row.cell_tex("\\textbf{defined in}")
                     row.cell_tex("\\textbf{first use}")
 
@@ -155,7 +157,7 @@ def create_table_nomenclature(
                         #     text = "\\unused " + text
                         row.cell_tex(text)
 
-                        if style == 'medium':
+                        if style == "medium":
                             ref = s.other.get(SEE_ALSO, "")
                             if ref:
                                 if not ":" in ref:
@@ -180,14 +182,14 @@ def create_table_nomenclature(
                                         t2 = "p.\\pageref{%s} near~\\cref{%s}" % (l, l)
 
                                     else:
-                                        t2 = ''
+                                        t2 = ""
                                 else:
-                                    t2 = ''
+                                    t2 = ""
                             else:
-                                t2 = ''
+                                t2 = ""
 
                             if is_unused:
-                                t2 += '\\unused'
+                                t2 += "\\unused"
                             row.cell_tex(t2)
 
 
