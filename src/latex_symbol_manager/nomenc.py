@@ -190,11 +190,11 @@ def create_table_nomenclature(
                         sct = "-"
 
                     levels = section.name.count("/")
-
+                    SP = "\quad\quad"
                     if section.parent is None:
-                        row.multicolumn_tex(4, "l", f"\\nomencsectionname{{{sct}}}")
+                        row.multicolumn_tex(4, "l", SP * levels + f"\\nomencsectionname{{{sct}}}")
                     else:
-                        row.multicolumn_tex(4, "c", "\quad" * levels + f"\\nomencsubsectionname{{{sct}}}")
+                        row.multicolumn_tex(4, "l", SP * levels + f"\\nomencsubsectionname{{{sct}}}")
 
                 if section.parent is None:
                     table.hline()
