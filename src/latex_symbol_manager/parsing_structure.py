@@ -79,19 +79,21 @@ def create_section(el, peek, sections, name, description) -> SymbolSection:
             err = "Already know section %r from %r." % (name, sections[name].where)
             raise ParsingError(err, el.where)
 
-    # Check subs
-    if "/" in name:
-        parent = name.split("/")[0].strip()
-        if not parent in sections:
-            if False:  # tmp disable
-                warning(
-                    "Creating dummy parent section %r.\n "
-                    "Already know %s." % (parent, list(sections.keys())),
-                    el,
-                )
-            create_section(el, None, sections, parent, "")
-    else:
-        parent = None
+    # # Check subs
+    # if "/" in name:
+    #     parent, _, subname = name.rpartition('/')
+    #     if not parent in sections:
+    #
+    #         parent = None
+    #         # if True:  # tmp disable
+    #         #     warning(
+    #         #         "Creating dummy parent section %r.\n "
+    #         #         "Already know %s." % (parent, list(sections.keys())),
+    #         #         el,
+    #         #     )
+    #         # create_section(el, None, sections, parent, "")
+    # else:
+    #     parent = None
 
     if peek is not None:
         attrs = load_attributes(peek, KNOWN_TAGS_SECTIONS)
@@ -99,12 +101,12 @@ def create_section(el, peek, sections, name, description) -> SymbolSection:
         attrs = {}
 
     definition_order: int = len(sections)
-
+    parent = None
     section = SymbolSection(name, description, {}, parent, {}, el.where, definition_order, attrs)
     sections[section.name] = section
-
-    if parent is not None:
-        sections[parent].subs[section.name] = section
+    #
+    # if parent is not None:
+    #     sections[parent].subs[section.name] = section
 
     return section
 

@@ -2,8 +2,9 @@ import sys
 from typing import Dict, List, Tuple
 
 from .parsing_structure import parse_symbols
-from .structures import SymbolSection
+from .structures import SectionName, SymbolSection
 from .symbol import Symbol
+from . import logger
 
 __all__ = [
     "parse_all_symbols",
@@ -23,8 +24,8 @@ def parse_all_symbols(args: List[str]):
 
 
 def parse_all_sections_symbols(args: List[str]) -> Tuple[Dict[str, SymbolSection], Dict[str, Symbol]]:
-    sections = {}
-    symbols = {}
+    sections: Dict[SectionName, SymbolSection] = {}
+    symbols: Dict[str, Symbol] = {}
 
     if not args:
         # logger.debug('Parsing from stdin...')
@@ -36,4 +37,17 @@ def parse_all_sections_symbols(args: List[str]) -> Tuple[Dict[str, SymbolSection
             with open(filename) as f:
                 for _ in parse_symbols(f, filename, sections, symbols):
                     pass
+
+    for k, v in sections.items():
+        # Check subs
+        if "/" in v.name:
+            parent_name_, _, subname_ = v.name.rpartition("/")
+            parent_name = SectionName(parent_name_)
+            if not parent_name in sections:
+                logger.warning("cannot find parent", name=v.name, parent_name=parent_name)
+            else:
+                parent = sections[parent_name]
+                parent.subs[v.name] = v
+                v.parent = parent
+
     return sections, symbols

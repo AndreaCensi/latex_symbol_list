@@ -19,7 +19,7 @@ from zuper_ipce import object_from_ipce
 from . import logger
 from .find_commands import find_all_commands_in_string, Usage
 from .interface import parse_all_sections_symbols
-from .structures import NO_INLINE, NO_SUMMARY
+from .structures import NO_INLINE, NO_SUMMARY, SymbolSection
 from .symbol import Symbol
 
 
@@ -27,14 +27,16 @@ def raw_appearance(s):
     return color_rgb(texttt(s), [0.5, 0.5, 0.5])
 
 
-def write_symbol_rows(s, table: Tabular, write_examples: bool, write_desc: bool, example_size: str, is_unused: bool):
+def write_symbol_rows(
+    s, table: Tabular, write_examples: bool, write_desc: bool, example_size: str, is_unused: bool
+):
     x = "\\unused " if is_unused else ""
 
-    firstusage = ''
+    firstusage = ""
     if s.usages:
         notnull = [_ for _ in s.usages if _.last_label]
         if notnull:
-            firstusage = '\\cref{%s}' % notnull[0].last_label
+            firstusage = "\\cref{%s}" % notnull[0].last_label
 
     used_example = False
 
@@ -57,7 +59,6 @@ def write_symbol_rows(s, table: Tabular, write_examples: bool, write_desc: bool,
                 row.cell_tex(x)
 
             row.cell_tex(firstusage)
-
 
     else:
         # args = ",".join(["..."] * s.nargs)
@@ -119,7 +120,13 @@ def create_table(
 
         with fragment.longtable(["l", "p{1cm}", "p{5cm}", "l", "l"]) as table:
 
-            table.row_tex('\\textbf{command}', '\\textbf{result}', '\\textbf{description}', '\\textbf{definition}', '\\textbf{first use}')
+            table.row_tex(
+                "\\textbf{command}",
+                "\\textbf{result}",
+                "\\textbf{description}",
+                "\\textbf{definition}",
+                "\\textbf{first use}",
+            )
             table.hline()
             table.hline()
             table.endhead()
@@ -254,8 +261,11 @@ def main():
 
         from .nomenc import order_sections
 
+        # logger.info('before ordering', sections=list(sections))
         sections = order_sections(sections)
-        # logger.info(sorted=list(sections))
+        # logger.info('after ordering', sections=list(sections))
+
+        show_hierarchy(sections)
         logger.info("Loaded %d sections with %d symbols.\n" % (len(sections), len(symbols)))
         if not sections or not symbols:
             raise Exception("Not enough data found.")
@@ -328,6 +338,13 @@ def main():
         sys.stderr.write(traceback.format_exc())
         sys.stderr.write("\n")
         sys.exit(-1)
+
+
+def show_hierarchy(s: Dict[str, SymbolSection]):
+    ss = {}
+    for k, v in s.items():
+        ss[k] = list(v.subs)
+    logger.info("hierarchy", ss=ss)
 
 
 if __name__ == "__main__":

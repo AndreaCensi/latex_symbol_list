@@ -58,7 +58,9 @@ def nomenc_main(args):
         symbols = dict((k, v) for k, v in list(symbols.items()) if k in have_and_used)
         # TODO: remove symbols from sections
 
+    # logger.info('before ordering', sections=list(sections))
     sections = order_sections(sections)
+    # logger.info('after ordering', sections=list(sections))
 
     def is_section_empty(s: SymbolSection):
         return (NOMENC_EXCLUDE in s.attrs) or ((not s.subs) and (not s.symbols))
@@ -108,17 +110,32 @@ def nomenc_main(args):
 
 
 def order_sections(a: Dict[str, SymbolSection]) -> Dict[str, SymbolSection]:
+    tops = {}
+    for k, v in a.items():
+        if v.parent is None:
+            tops[k] = v
+
     result = {}
-    original = list(a)
-    while original:
-        first = original.pop(0)
-        result[first] = a[first]
-        children = []
-        for x in list(original):
-            if x.startswith(first + "/"):
-                original.remove(x)
-                result[x] = a[x]
-            children.append(x)
+
+    def copy_now(sn: str, s: SymbolSection):
+        result[sn] = s
+        orde = sorted(s.subs)
+        for k in orde:
+            copy_now(k, s.subs[k])
+
+    for k, v in tops.items():
+        copy_now(k, v)
+    #
+    # original = list(a)
+    # while original:
+    #     first = original.pop(0)
+    #     result[first] = a[first]
+    #     children = []
+    #     for x in list(original):
+    #         if x.startswith(first + "/"):
+    #             original.remove(x)
+    #             result[x] = a[x]
+    #         children.append(x)
     return result
 
 
@@ -169,9 +186,9 @@ def create_table_nomenclature(
                     for _, v in section.symbols.items()
                     if (NOMENC_EXCLUDE not in v.other) and (v.nomenclature or v.nargs == 0)  # and (_ in only)
                 ]
-
-                if (not symbols) and (not section.subs):
-                    continue
+                #
+                # if (not symbols) and (not section.subs):
+                #     continue
 
                 with table.row() as row:
                     if section.description is None:
