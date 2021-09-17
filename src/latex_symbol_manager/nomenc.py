@@ -60,6 +60,7 @@ def nomenc_main(args):
 
     # logger.info('before ordering', sections=list(sections))
     sections = order_sections(sections)
+
     # logger.info('after ordering', sections=list(sections))
 
     def is_section_empty(s: SymbolSection):
@@ -125,17 +126,6 @@ def order_sections(a: Dict[str, SymbolSection]) -> Dict[str, SymbolSection]:
 
     for k, v in tops.items():
         copy_now(k, v)
-    #
-    # original = list(a)
-    # while original:
-    #     first = original.pop(0)
-    #     result[first] = a[first]
-    #     children = []
-    #     for x in list(original):
-    #         if x.startswith(first + "/"):
-    #             original.remove(x)
-    #             result[x] = a[x]
-    #         children.append(x)
     return result
 
 
@@ -199,10 +189,12 @@ def create_table_nomenclature(
                     if not sct:
                         sct = "-"
 
+                    levels = section.name.count("/")
+
                     if section.parent is None:
                         row.multicolumn_tex(4, "l", f"\\nomencsectionname{{{sct}}}")
                     else:
-                        row.multicolumn_tex(4, "c", f"\\nomencsubsectionname{{{sct}}}")
+                        row.multicolumn_tex(4, "c", "\quad" * levels + f"\\nomencsubsectionname{{{sct}}}")
 
                 if section.parent is None:
                     table.hline()
@@ -246,7 +238,9 @@ def create_table_nomenclature(
                                         "in a way which is not debuggable" % (s, ref)
                                     )
                                     raise Exception(msg)
-                                row.cell_tex("$\\to$\\cref{%s} on p.\\pageref{%s}" % (ref, ref))
+                                tex = "$\\to$\\cref{%s} on p.\\pageref{%s}" % (ref, ref)
+                                tex = "\\iflabelexists{%s}{%s}" % (ref, tex)
+                                row.cell_tex(tex)
                                 # row.cell_tex("on " % ref)
                             else:
                                 row.cell_tex("")
@@ -258,7 +252,7 @@ def create_table_nomenclature(
                                     l = notnull[0].last_label
                                     if ref != l:
                                         t2 = "p.\\pageref{%s} near~\\cref{%s}" % (l, l)
-
+                                        t2 = "\\iflabelexists{%s}{%s}" % (l, t2)
                                     else:
                                         t2 = ""
                                 else:

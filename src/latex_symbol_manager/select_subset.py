@@ -1,7 +1,8 @@
-from .interface import parse_all_sections_symbols
-from . import logger
-from optparse import OptionParser
 import sys
+from optparse import OptionParser
+
+from . import logger
+from .interface import parse_all_sections_symbols
 
 
 def main():

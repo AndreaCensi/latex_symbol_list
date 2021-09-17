@@ -1,10 +1,10 @@
 import sys
 from typing import Dict, List, Tuple
 
+from . import logger
 from .parsing_structure import parse_symbols
 from .structures import SectionName, SymbolSection
 from .symbol import Symbol
-from . import logger
 
 __all__ = [
     "parse_all_symbols",

@@ -4,7 +4,6 @@ from optparse import OptionParser
 from typing import Dict, List, Set
 
 import yaml
-
 from latex_gen import (
     color_rgb,
     emph,
@@ -16,6 +15,7 @@ from latex_gen import (
 )
 from latex_gen.tabular import Tabular
 from zuper_ipce import object_from_ipce
+
 from . import logger
 from .find_commands import find_all_commands_in_string, Usage
 from .interface import parse_all_sections_symbols

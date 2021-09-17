@@ -1,7 +1,8 @@
-from .structures import NewCommand, OtherLine, SpecialComment, ParsingError, Where
-from .lookahead import Lookahead
 import re
 import sys
+
+from .lookahead import Lookahead
+from .structures import NewCommand, OtherLine, ParsingError, SpecialComment, Where
 
 
 def strip_empty(stream):

@@ -1,5 +1,6 @@
-import yaml
 from typing import Dict, List
+
+import yaml
 
 
 class NomenclatureEntry(yaml.YAMLObject):
@@ -26,7 +27,7 @@ class Symbol(yaml.YAMLObject):
         nargs=0,  # @ReservedAssignment
         where=None,
         nomenclature=None,
-        other:Dict = None,
+        other: Dict = None,
         usages: List = None,
     ):
         self.symbol = symbol
