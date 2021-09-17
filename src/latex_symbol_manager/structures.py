@@ -1,4 +1,8 @@
 from collections import namedtuple
+from dataclasses import dataclass
+from typing import Dict, NewType, Optional
+
+from latex_symbol_manager.symbol import Symbol
 
 NO_SUMMARY = "nosummary"
 
@@ -31,15 +35,11 @@ KNOWN_TAGS_SECTIONS = [NOMENC_EXCLUDE, NOT_FINAL, DEPRECATED]
 NewCommand = namedtuple("NewCommand", "command nargs body comment where")
 SpecialComment = namedtuple("SpecialComment", "tag lines where")
 OtherLine = namedtuple("OtherLine", "line where")
-
-SymbolSection = namedtuple(
-    "SymbolSection",
-    "name description symbols parent subs where definition_order attrs",
-)
+SectionName = NewType("SectionName", str)
 
 
 class Where:
-    def __init__(self, filename, lineno, text=None):
+    def __init__(self, filename: str, lineno: int, text: str = None):
         self.filename = filename
         self.lineno = lineno
         if text and text[-1] == "\n":
@@ -51,6 +51,18 @@ class Where:
 
     def __repr__(self):
         return "Where(%s,%s)" % (self.filename, self.lineno)
+
+
+@dataclass
+class SymbolSection:
+    name: SectionName
+    description: str
+    symbols: Dict[str, Symbol]
+    parent: "Optional[str]"
+    subs: "Dict[SectionName, SymbolSection]"
+    where: Where
+    definition_order: int
+    attrs: Dict[str, str]
 
 
 class ParsingError(Exception):

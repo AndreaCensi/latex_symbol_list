@@ -1,7 +1,9 @@
 import sys
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from .parsing_structure import parse_symbols
+from .structures import SymbolSection
+from .symbol import Symbol
 
 __all__ = [
     "parse_all_symbols",
@@ -9,7 +11,7 @@ __all__ = [
 ]
 
 
-def parse_all_symbols(args):
+def parse_all_symbols(args: List[str]):
     if not args:
         for x in parse_symbols(sys.stdin, "stdin"):
             yield x
@@ -20,7 +22,7 @@ def parse_all_symbols(args):
                     yield x
 
 
-def parse_all_sections_symbols(args) -> Tuple[Dict, Dict]:
+def parse_all_sections_symbols(args: List[str]) -> Tuple[Dict[str, SymbolSection], Dict[str, Symbol]]:
     sections = {}
     symbols = {}
 

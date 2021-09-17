@@ -29,7 +29,10 @@ def warning(s, el=None):
 
 
 def parse_symbols(
-    stream, filename, sections: Optional[Dict] = None, symbols: Optional[Dict] = None
+    stream,
+    filename,
+    sections: Optional[Dict[str, SymbolSection]] = None,
+    symbols: Optional[Dict[str, Symbol]] = None,
 ) -> Iterator[Union[OtherLine, SymbolSection, Symbol]]:
     current_section = None
     if sections is None:
@@ -95,7 +98,7 @@ def create_section(el, peek, sections, name, description) -> SymbolSection:
     else:
         attrs = {}
 
-    definition_order = len(sections)
+    definition_order: int = len(sections)
 
     section = SymbolSection(name, description, {}, parent, {}, el.where, definition_order, attrs)
     sections[section.name] = section
