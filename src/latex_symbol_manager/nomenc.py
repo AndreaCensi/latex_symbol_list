@@ -239,7 +239,7 @@ def create_table_nomenclature(
                                     )
                                     raise Exception(msg)
                                 tex = "$\\to$\\cref{%s} on p.\\pageref{%s}" % (ref, ref)
-                                tex = "\\iflabelexists{%s}{%s}" % (ref, tex)
+                                tex = iflabelexists(ref, tex)
                                 row.cell_tex(tex)
                                 # row.cell_tex("on " % ref)
                             else:
@@ -252,7 +252,7 @@ def create_table_nomenclature(
                                     l = notnull[0].last_label
                                     if ref != l:
                                         t2 = "p.\\pageref{%s} near~\\cref{%s}" % (l, l)
-                                        t2 = "\\iflabelexists{%s}{%s}" % (l, t2)
+                                        t2 = iflabelexists(l, t2)
                                     else:
                                         t2 = ""
                                 else:
@@ -263,6 +263,10 @@ def create_table_nomenclature(
                             if is_unused:
                                 t2 += "\\unused"
                             row.cell_tex(t2)
+
+
+def iflabelexists(label: str, tex: str) -> str:
+    return "\\iflabelexists{%s}{%s}" % (label, tex)
 
 
 def main():
