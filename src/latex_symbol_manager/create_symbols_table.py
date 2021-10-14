@@ -14,6 +14,7 @@ from latex_gen import (
     verbatim_soft,
 )
 from latex_gen.tabular import Tabular
+from latex_symbol_manager.nomenc import iflabelexists
 from zuper_ipce import object_from_ipce
 
 from . import logger
@@ -36,7 +37,9 @@ def write_symbol_rows(
     if s.usages:
         notnull = [_ for _ in s.usages if _.last_label]
         if notnull:
-            firstusage = "\\cref{%s}" % notnull[0].last_label
+            lastlabel = notnull[0].last_label
+
+            firstusage = iflabelexists(lastlabel, "\\cref{%s}" % lastlabel)
 
     used_example = False
 

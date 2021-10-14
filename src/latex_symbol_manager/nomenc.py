@@ -86,7 +86,7 @@ def nomenc_main(args):
                     section.symbols.pop(symbol_name)
             if excluded:
                 logger.info(
-                    f"Excluding from section {section_name!r} these symbols because there is no descrition.",
+                    f"Excluding from section {section_name!r} these symbols because there is no description.",
                     excluded=excluded,
                 )
 
@@ -101,9 +101,7 @@ def nomenc_main(args):
                         section.subs.pop(sub_section_name)
             for section_name, section in list(sections.items()):
                 if is_section_empty(section):
-                    logger.info(
-                        f"Excluding  section {section_name!r}  because " f"there is no symbol and no sub."
-                    )
+                    logger.info(f"Excluding section {section_name!r} because there is no symbol and no sub.")
 
                     sections.pop(section_name)
 
