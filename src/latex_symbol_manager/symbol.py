@@ -94,7 +94,7 @@ class Symbol(yaml.YAMLObject):
         return s
 
     def symbol_dependencies(self):
-        """ Returns all the commands used by the definition """
+        """Returns all the commands used by the definition"""
         from .find_commands import find_all_commands_in_string
 
         return find_all_commands_in_string(self.tex)

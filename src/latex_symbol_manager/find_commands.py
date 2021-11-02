@@ -23,17 +23,17 @@ class Usage:
 
 
 def find_all_commands(filename: str) -> Dict[str, List[Usage]]:
-    """ Finds all TeX commands used in the file. """
+    """Finds all TeX commands used in the file."""
     commands: Dict[str, List[Usage]] = defaultdict(list)
     found = set()
     last_label = None
     data = read_ustring_from_utf8_file(filename)
-    logger.info(f'Processing {filename}')
+    logger.info(f"Processing {filename}")
     remove = [
-        ('\\begin{forslides}', '\\end{forslides}'),
-        ('\\begin{comment}', '\\end{comment}'),
+        ("\\begin{forslides}", "\\end{forslides}"),
+        ("\\begin{comment}", "\\end{comment}"),
     ]
-    data = remove_hash_comments(data, remove_empty_lines=False, comment_char='%')
+    data = remove_hash_comments(data, remove_empty_lines=False, comment_char="%")
     while True:
         changes = 0
         for start, stop in remove:
@@ -43,13 +43,13 @@ def find_all_commands(filename: str) -> Dict[str, List[Usage]]:
                 after = data[i:]
                 n = after.index(stop)
 
-                data = data[:i] + data[i + n + len(stop):]
+                data = data[:i] + data[i + n + len(stop) :]
                 changes += 1
                 break
 
         if changes == 0:
             break
-    lines = data.split('\n')
+    lines = data.split("\n")
     for a, line in enumerate(lines):
         # if "%" in line:
         #     i = line.index("%")
@@ -57,8 +57,8 @@ def find_all_commands(filename: str) -> Dict[str, List[Usage]]:
 
         for y in label_regex.findall(line):
             last_label = y
-            assert '}' not in last_label, last_label
-            assert '{' not in last_label, last_label
+            assert "}" not in last_label, last_label
+            assert "{" not in last_label, last_label
 
         for x in command_regex.findall(line):
             if x not in found:
