@@ -39,7 +39,7 @@ SectionName = NewType("SectionName", str)
 
 
 class Where:
-    def __init__(self, filename: str, lineno: int, text: str = None):
+    def __init__(self, filename: str, lineno: int, text: Optional[str] = None):
         self.filename = filename
         self.lineno = lineno
         if text and text[-1] == "\n":
