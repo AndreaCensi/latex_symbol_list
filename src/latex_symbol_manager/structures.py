@@ -2,7 +2,7 @@ from collections import namedtuple
 from dataclasses import dataclass
 from typing import Dict, NewType, Optional
 
-from latex_symbol_manager.symbol import Symbol
+from .symbol import Symbol
 
 NO_SUMMARY = "nosummary"
 
