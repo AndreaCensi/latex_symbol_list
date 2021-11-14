@@ -48,7 +48,7 @@ install-testing-deps:
 		codecov\
 		sphinx\
 		sphinx-rtd-theme
-cover_packages=latex_symbol_manager,latex_symbol_manager_tests
+cover_packages=latex_symbol_manager,latex_symbol_manager_tests,latex_symbol_manager_tests.test1
 
 # PROJECT_ROOT ?= /project
 # REGISTRY ?= docker.io
@@ -77,12 +77,12 @@ clean:
 
 test:
 	mkdir -p  $(tr)
-	DISABLE_CONTRACTS=1 nosetests $(extra) $(coverage)  latex_symbol_manager_tests  -v --nologcapture $(xunit)
+	DISABLE_CONTRACTS=1 nosetests $(extra) $(coverage)  latex_symbol_manager_tests latex_symbol_manager_tests  -v --nologcapture $(xunit)
 
 
 test-parallel:
 	mkdir -p  $(tr)
-	DISABLE_CONTRACTS=1 nosetests $(extra) $(coverage) latex_symbol_manager_tests -v --nologcapture $(parallel) $(xunitmp)
+	DISABLE_CONTRACTS=1 nosetests $(extra) $(coverage) latex_symbol_manager_tests latex_symbol_manager_tests -v --nologcapture $(parallel) $(xunitmp)
 
 
 test-parallel-circle:
@@ -90,7 +90,7 @@ test-parallel-circle:
 	DISABLE_CONTRACTS=1 \
 	NODE_TOTAL=$(CIRCLE_NODE_TOTAL) \
 	NODE_INDEX=$(CIRCLE_NODE_INDEX) \
-	nosetests $(coverage) $(xunitmp) latex_symbol_manager_tests  -v  $(parallel)
+	nosetests $(coverage) $(xunitmp) latex_symbol_manager_tests latex_symbol_manager_tests  -v  $(parallel)
 
 
 coverage-combine:
@@ -101,4 +101,4 @@ docs:
 
 -include extra.mk
 
-# sigil 605b20ee4a4e217d445a40d5b4c04185
+# sigil c919124b6d3d947e6e637222cf900f3e
