@@ -31,7 +31,7 @@ jobs:
       COLUMNS: '160'
       # default is /usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       PATH: /root/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests,latex_symbol_manager_tests.test1
+      COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests
       TEST_PACKAGES: latex_symbol_manager_tests
     docker:
     - image: ${DOCKER_REGISTRY}/zupermind/zuper-ci-3.8:z7
@@ -171,7 +171,7 @@ jobs:
       COLUMNS: '160'
       # default is /usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       PATH: /root/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests,latex_symbol_manager_tests.test1
+      COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests
       TEST_PACKAGES: latex_symbol_manager_tests
     docker:
     - image: ${DOCKER_REGISTRY}/zupermind/zuper-ci-3.8:z7
@@ -311,7 +311,7 @@ jobs:
       COLUMNS: '160'
       # default is /usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       PATH: /root/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests,latex_symbol_manager_tests.test1
+      COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests
       TEST_PACKAGES: latex_symbol_manager_tests
     docker:
     - image: ${DOCKER_REGISTRY}/zupermind/zuper-ci-3.9:z7
@@ -451,7 +451,7 @@ jobs:
       COLUMNS: '160'
       # default is /usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       PATH: /root/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests,latex_symbol_manager_tests.test1
+      COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests
       TEST_PACKAGES: latex_symbol_manager_tests
     docker:
     - image: ${DOCKER_REGISTRY}/zupermind/zuper-ci-3.9:z7
@@ -587,4 +587,4 @@ jobs:
           bash <(curl -s https://codecov.io/bash)
     resource_class: medium
 
-# sigil 2f7be5a57f43f2c5b8b19b4d333f9d31
+# sigil c454704b7a4744acc449a1ef189f92d3
