@@ -109,14 +109,14 @@ jobs:
         name: latex_symbol_manager_tests
         command: |-
           set -euxo pipefail
-              mkdir -p out/test-results
-              xunit_output=$PWD/out/test-results/nose-${CIRCLE_NODE_INDEX}-latex_symbol_manager_tests-xunit.xml
-              nosetests \
-                  --rednose --immediate \
-                  --cover-tests --with-coverage \
-                  --with-xunit --xunit-file=${xunit_output} \
-                  --cover-package=${COVER_PACKAGES} \
-                  latex_symbol_manager_tests
+          mkdir -p out/test-results
+          xunit_output=$PWD/out/test-results/nose-${CIRCLE_NODE_INDEX}-latex_symbol_manager_tests-xunit.xml
+          nosetests \
+              --rednose --immediate \
+              --cover-tests --with-coverage \
+              --with-xunit --xunit-file=${xunit_output} \
+              --cover-package=${COVER_PACKAGES} \
+              latex_symbol_manager_tests
     - run:
         name: post-circle-tests
         command: |
@@ -262,8 +262,11 @@ jobs:
           fi
           mkdir -p out/test-results
           xunit_output=$PWD/out/test-results/nose-${CIRCLE_NODE_INDEX}-latex_symbol_manager_tests-xunit.xml
-          nose2 --with-coverage --plugin nose2.plugins.junitxml --junit-xml --junit-xml-path ${xunit_output}
-          $TEST_MODULES
+          nose2 --with-coverage \
+              --plugin nose2.plugins.junitxml \
+              --junit-xml \
+              --junit-xml-path ${xunit_output} \
+              $TEST_MODULES
           # TODO: cover packages
     - run:
         name: post-circle-tests
@@ -304,4 +307,4 @@ jobs:
           ./codecov -t ${CODECOV_TOKEN}
     resource_class: small
 
-# sigil a881dee235caf4d0cff62edf5f5f28e5
+# sigil 7ac74223eab889ffbb222bfbd4992ed3
