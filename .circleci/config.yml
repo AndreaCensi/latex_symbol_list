@@ -262,7 +262,8 @@ jobs:
           fi
           mkdir -p out/test-results
           xunit_output=$PWD/out/test-results/nose-${CIRCLE_NODE_INDEX}-latex_symbol_manager_tests-xunit.xml
-          nose2 --with-coverage --plugin nose2.plugins.junitxml --junit-xml --junit-xml-path ${xunit_output} $TEST_MODULES
+          nose2 --with-coverage --plugin nose2.plugins.junitxml --junit-xml --junit-xml-path ${xunit_output}
+          $TEST_MODULES
           # TODO: cover packages
     - run:
         name: post-circle-tests
@@ -303,4 +304,4 @@ jobs:
           ./codecov -t ${CODECOV_TOKEN}
     resource_class: small
 
-# sigil 7998a50f4409b2f530d11fa310d5d37f
+# sigil a881dee235caf4d0cff62edf5f5f28e5
