@@ -6,6 +6,7 @@ from typing import Iterator, List, Optional, Tuple, Union
 
 from zuper_commons.fs import read_ustring_from_utf8_file, write_ustring_to_utf8_file
 from zuper_commons.types import ZValueError
+from zuper_utils_where import line_and_col
 
 from . import logger
 
@@ -38,7 +39,7 @@ def find_chunks(a: str, b: str, data: str) -> Iterator[Tuple[int, str]]:
             break
         chunk = data[i + len(a) : i + len(a) + j]
 
-        yield nbef, chunk
+        yield nbef + i, chunk
         data = data[i + len(a) + len(chunk) + len(b) :]
         nbef += i + len(a) + len(chunk) + len(b)
 
@@ -61,7 +62,8 @@ def find_in_file(a, b, data) -> Iterator[Equation]:
             r = "\\label{" + label + "}"
             chunk = chunk.replace(r, "{}")
 
-        chunk = chunk.rstrip()
+        chunk = chunk  # .rstrip()
+        chunk = remove_tex_comments(chunk)
         chunk = remove_all_labels(chunk)
         yield Equation(nbef, label, a, chunk, b, None)
 
@@ -126,6 +128,8 @@ def find_equation_in_file(data: str) -> Iterator[Equation]:
                 logger.error("Found weird label for equation", label=eq.label, eq=eq)
                 continue
             chunk = eq.content
+            # chunk = chunk.replace('%', '')
+            chunk = chunk.rstrip()
             for x in [".", ","]:
                 if chunk.endswith(x):
                     chunk = chunk[:-1]
@@ -219,23 +223,43 @@ def remove_tex_comments(data: str) -> str:
     return "\n".join(b)
 
 
+def change_tex_comments(data: str) -> str:
+    """Replaces all comments"""
+    lines = data.split("\n")
+    b = []
+    for line in lines:
+        if "%" in line:
+            i = line.index("%")
+            before = line[:i]
+            after = line[i:]
+            line2 = before + "%" * len(after)
+            b.append(line2)
+        else:
+            b.append(line)
+    return "\n".join(b)
+
+
 def main():
     parser = OptionParser(usage)
     parser.add_option("--output", help="Output directory")
     parser.add_option("--search", help="Search directory")
+    parser.add_option("--root", help="What to consider the root directory (parent of --search)")
     (options, args) = parser.parse_args()  # @UnusedVariable
     if args:
         raise Exception()
     out = options.output
 
     search = options.search
+    if options.root is None:
+        options.root = search
+    root = options.root
     filenames = glob.glob(search + "/**/*.tex", recursive=True)
 
     for filename in filenames:
-        rel_filename = os.path.relpath(filename, search)
+        rel_filename = os.path.relpath(filename, root)
         # logger.info(filename=filename, rel_filename=rel_filename)
-        data = read_ustring_from_utf8_file(filename)
-        data = remove_tex_comments(data)
+        data0 = read_ustring_from_utf8_file(filename)
+        data = change_tex_comments(data0)
         equations = list(find_equation_in_file(data))
         others = list(find_others(data))
         # equations = sorted(equations, key=(lambda x: x.start))
@@ -249,6 +273,12 @@ def main():
         for i, eq in enumerate(stuff):
             currfile, _ = os.path.splitext(os.path.basename(filename))
             if not eq.label:
+                if not any(x in eq.a for x in ["equation", "align", "table", "lemma"]):
+                    line, col = line_and_col(eq.start, data)
+                    content = eq.a + eq.content + eq.b
+                    logger.warning(
+                        f"No label for chunk in {filename}:{line + 1} col {col + 1}", content=content
+                    )
                 continue
             if eq.label in known_labels:
                 msg = "Found two identical labels"

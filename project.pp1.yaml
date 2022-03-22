@@ -10,6 +10,7 @@ install_requires:
 - PyYAML
 - zuper-typing-z7
 - zuper-commons-z7
+- zuper-utils-where-z7
 - zuper-ipce-z7
 
 tests_require: []
