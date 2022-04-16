@@ -21,7 +21,7 @@ jobs:
       COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests
       TEST_PACKAGES: latex_symbol_manager_tests
     docker:
-    - image: ${DOCKER_REGISTRY}/zupermind/z7-stage-zuper-ci-3.10:z7
+    - image: ${DOCKER_REGISTRY}/${DOCKER_TARGET_ORG}/${DOCKER_REPO_PREFIX}zuper-ci-3.10:${Z_DISTRO}
       auth:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
@@ -164,4 +164,4 @@ jobs:
           ./codecov -t ${CODECOV_TOKEN}
     resource_class: small
 
-# sigil fea6f65e035e247b1d7db45ce90af780
+# sigil 50ca4806143c04e966ed77f2c58fe160
