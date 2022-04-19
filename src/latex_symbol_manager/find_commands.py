@@ -49,7 +49,7 @@ def find_all_commands(filename: str) -> Dict[str, List[Usage]]:
 
         if changes == 0:
             break
-    lines = data.split("\n")
+    lines = data.splitlines()
     for a, line in enumerate(lines):
         # if "%" in line:
         #     i = line.index("%")

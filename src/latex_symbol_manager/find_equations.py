@@ -210,7 +210,7 @@ def find_tables_in_file(data: str) -> Iterator[Equation]:
 
 
 def remove_tex_comments(data: str) -> str:
-    lines = data.split("\n")
+    lines = data.splitlines()
     b = []
     for line in lines:
         if "%" in line:
@@ -220,12 +220,12 @@ def remove_tex_comments(data: str) -> str:
                 b.append(line)
         else:
             b.append(line)
-    return "\n".join(b)
+    return "\n".join(b) + "\n"
 
 
 def change_tex_comments(data: str) -> str:
     """Replaces all comments"""
-    lines = data.split("\n")
+    lines = data.splitlines()
     b = []
     for line in lines:
         if "%" in line:
@@ -236,7 +236,7 @@ def change_tex_comments(data: str) -> str:
             b.append(line2)
         else:
             b.append(line)
-    return "\n".join(b)
+    return "\n".join(b) + "\n"
 
 
 def main():
