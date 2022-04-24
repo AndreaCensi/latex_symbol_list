@@ -7,8 +7,8 @@ from .structures import SectionName, SymbolSection
 from .symbol import Symbol
 
 __all__ = [
-    "parse_all_symbols",
     "parse_all_sections_symbols",
+    "parse_all_symbols",
 ]
 
 
