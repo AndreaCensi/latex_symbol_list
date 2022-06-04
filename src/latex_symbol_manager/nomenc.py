@@ -1,6 +1,6 @@
 import sys
 from optparse import OptionParser
-from typing import Dict, List, Literal
+from typing import Collection, Dict, List, Literal
 
 import yaml
 from latex_gen import latex_fragment
@@ -50,9 +50,16 @@ def nomenc_main(args):
         used = set(only)
         have_but_not_used = have.difference(used)
         used_but_not_have = used.difference(have)
+
+        def display(x: Collection[str]) -> str:
+            return ", ".join(sorted(x))
+
         if options.verbose:
             logger.info(
-                have=have, used=used, have_but_not_used=have_but_not_used, used_but_not_have=used_but_not_have
+                have=display(have),
+                used=display(used),
+                have_but_not_used=display(have_but_not_used),
+                used_but_not_have=display(used_but_not_have),
             )
         have_and_used = have.intersection(used)
         symbols = dict((k, v) for k, v in list(symbols.items()) if k in have_and_used)

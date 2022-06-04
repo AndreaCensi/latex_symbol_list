@@ -1,7 +1,7 @@
 import sys
 import traceback
 from optparse import OptionParser
-from typing import Dict, List, Set
+from typing import Collection, Dict, List, Set
 
 import yaml
 
@@ -252,10 +252,14 @@ def main():
             have_but_not_used = have.difference(used)
             used_but_not_have = used.difference(have)
             if options.verbose:
-                logger.debug(have=have)
-                logger.debug(used=used)
-                logger.debug(have_but_not_used=have_but_not_used)
-                logger.debug(used_but_not_have=used_but_not_have)
+
+                def display(x: Collection[str]) -> str:
+                    return ", ".join(sorted(x))
+
+                logger.debug(have=display(have))
+                logger.debug(used=display(used))
+                logger.debug(have_but_not_used=display(have_but_not_used))
+                logger.debug(used_but_not_have=display(used_but_not_have))
             # have_and_used = have.intersection(used)
             # used_symbols = set(dict((k, v) for k, v in list(symbols.items()) if k in have_and_used))
             # TODO: remove symbols from sections
