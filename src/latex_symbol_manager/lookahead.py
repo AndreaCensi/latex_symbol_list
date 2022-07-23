@@ -2,7 +2,9 @@ from typing import Generic, Iterator, List, Optional, TypeVar
 
 X = TypeVar("X")
 
-__all__ = ["Lookahead"]
+__all__ = [
+    "Lookahead",
+]
 
 
 class Lookahead(Generic[X]):

@@ -5,7 +5,9 @@ from .find_commands import find_all_commands
 from .interface import parse_all_sections_symbols
 from .script_utils import wrap_script_entry_point
 
-__all__ = ["lsm_extract_main"]
+__all__ = [
+    "lsm_extract_main",
+]
 
 usage = """
 
