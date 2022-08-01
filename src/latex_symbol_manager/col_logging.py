@@ -5,7 +5,7 @@ import platform
 
 from typing import List
 
-__all__: List[str] = []
+__all__ = ["add_coloring_to_emit_ansi"]
 
 
 def add_coloring_to_emit_ansi(fn):
