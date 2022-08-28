@@ -108,7 +108,7 @@ def is_equation_label(x: str) -> bool:
 
 
 def is_definition_label(x: str) -> bool:
-    return get_label_prefix(x) in ["def"]
+    return get_label_prefix(x) in ["def", "prop"]
 
 
 def is_table_label(x: str) -> bool:
@@ -119,7 +119,7 @@ def find_equation_in_file(data: str) -> Iterator[Equation]:
     options = [
         ("\\begin{equation}", "\\end{equation}", "equation*"),
         ("\\begin{equation*}", "\\end{equation*}", "equation*"),
-        ("\\begin{align}", "\\end{align}", "align"),
+        ("\\begin{align}", "\\end{align}", "align*"),
         ("\\begin{align*}", "\\end{align*}", "align*"),
     ]
     for a, b, newenv in options:
@@ -133,6 +133,9 @@ def find_equation_in_file(data: str) -> Iterator[Equation]:
             for x in [".", ","]:
                 if chunk.endswith(x):
                     chunk = chunk[:-1]
+                for n in range(10):
+                    s = f'{x}{n * " "}\\\\'
+                    chunk = chunk.replace(s, "\\\\")
             eq.content = chunk
             translation = "\\begin{" + newenv + "}" + eq.content + "\\end{" + newenv + "}\n"
             eq.translation = translation
@@ -143,6 +146,8 @@ def find_definition_in_file(data: str) -> Iterator[Equation]:
     options = [
         ("\\begin{definition}", "\\end{definition}", "definition*"),
         ("\\begin{ctdefinition}", "\\end{ctdefinition}", "definition*"),
+        ("\\begin{proposition}", "\\end{proposition}", "proposition*"),
+        ("\\begin{proposition*}", "\\end{proposition*}", "proposition*"),
     ]
     for a, b, newenv in options:
 
@@ -239,7 +244,7 @@ def change_tex_comments(data: str) -> str:
     return "\n".join(b) + "\n"
 
 
-def main():
+def main() -> None:
     parser = OptionParser(usage)
     parser.add_option("--output", help="Output directory")
     parser.add_option("--search", help="Search directory")
@@ -286,7 +291,8 @@ def main():
             known_labels[eq.label] = eq
             label = eq.label.replace(":", "_")
             base, _ = os.path.splitext(rel_filename)
-            fn = os.path.join(out, base, label + ".texi")
+            pre = f"{i:03d}-"
+            fn = os.path.join(out, base, pre + label + ".texi")
             write_ustring_to_utf8_file(eq.translation, fn, quiet=True)
 
 
