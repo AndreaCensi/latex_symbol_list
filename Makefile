@@ -48,6 +48,8 @@ install-testing-deps:
 		codecov\
 		sphinx\
 		sphinx-rtd-theme
+
+pack::
 cover_packages=latex_symbol_manager,latex_symbol_manager_tests,latex_symbol_manager_tests.test1
 
 # PROJECT_ROOT ?= /project
@@ -101,4 +103,4 @@ docs:
 
 -include extra.mk
 
-# sigil ad309ada2ea619d25b8cb7bb8e4f148a
+# sigil 3600d2ad1be7112f18f0c38f116f55fb
