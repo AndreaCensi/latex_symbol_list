@@ -11,14 +11,6 @@ bump:
 upload:
 	zuper-cli upload
 
-upload-old:
-	rm -f dist/*
-	rm -rf src/*.egg-info
-	python3 setup.py sdist
-	devpi use $(TWINE_REPOSITORY_URL)
-	devpi login $(TWINE_USERNAME) --password $(TWINE_PASSWORD)
-	devpi upload --verbose dist/*
-
 black:
 	black -l 110 --target-version py310 src
 
@@ -48,8 +40,6 @@ install-testing-deps:
 		codecov\
 		sphinx\
 		sphinx-rtd-theme
-
-pack::
 cover_packages=latex_symbol_manager,latex_symbol_manager_tests,latex_symbol_manager_tests.test1
 
 # PROJECT_ROOT ?= /project
@@ -103,4 +93,4 @@ docs:
 
 -include extra.mk
 
-# sigil 3600d2ad1be7112f18f0c38f116f55fb
+# sigil 817f31e3cc3d3dd55913b7cec73dfcd4
