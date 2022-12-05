@@ -14,6 +14,8 @@ usage = """
  
 """
 
+TAG_SKIP = "lsm-skip"
+
 
 @dataclass
 class Equation:
@@ -115,7 +117,7 @@ def is_table_label(x: str) -> bool:
     return get_label_prefix(x) in ["tab"]
 
 
-def find_equation_in_file(data: str) -> Iterator[Equation]:
+def find_equation_in_file(data: str, filename: str) -> Iterator[Equation]:
     options = [
         ("\\begin{equation}", "\\end{equation}", "equation*"),
         ("\\begin{equation*}", "\\end{equation*}", "equation*"),
@@ -125,7 +127,7 @@ def find_equation_in_file(data: str) -> Iterator[Equation]:
     for a, b, newenv in options:
         for eq in find_in_file(a, b, data):
             if eq.label and not is_equation_label(eq.label):
-                logger.error("Found weird label for equation", label=eq.label, eq=eq)
+                logger.error("Found weird label for equation", filename=filename, label=eq.label, eq=eq)
                 continue
             chunk = eq.content
             # chunk = chunk.replace('%', '')
@@ -142,7 +144,7 @@ def find_equation_in_file(data: str) -> Iterator[Equation]:
             yield eq
 
 
-def find_definition_in_file(data: str) -> Iterator[Equation]:
+def find_definition_in_file(data: str, filename: str) -> Iterator[Equation]:
     options = [
         ("\\begin{definition}", "\\end{definition}", "definition*"),
         ("\\begin{ctdefinition}", "\\end{ctdefinition}", "definition*"),
@@ -153,7 +155,7 @@ def find_definition_in_file(data: str) -> Iterator[Equation]:
 
         for eq in find_in_file(a, b, data):
             if eq.label and not is_definition_label(eq.label):
-                logger.error("Found weird label", label=eq.label, eq=eq)
+                logger.error("Found weird label", filename=filename, label=eq.label, eq=eq)
                 continue
 
             translation = (
@@ -166,7 +168,7 @@ def find_definition_in_file(data: str) -> Iterator[Equation]:
             yield eq
 
 
-def find_others(data: str) -> Iterator[Equation]:
+def find_others(data: str, filename: str) -> Iterator[Equation]:
     options = [
         ("\\begin{lemma}", "\\end{lemma}", "lemma*", ["lem"]),
         ("\\begin{lemma*}", "\\end{lemma*}", "lemma*", ["lem"]),
@@ -175,7 +177,7 @@ def find_others(data: str) -> Iterator[Equation]:
 
         for eq in find_in_file(a, b, data):
             if eq.label and not get_label_prefix(eq.label) in labelprefixes:
-                logger.error("Found weird label", label=eq.label, eq=eq)
+                logger.error("Found weird label", filename=filename, label=eq.label, eq=eq)
                 continue
 
             translation = (
@@ -188,7 +190,7 @@ def find_others(data: str) -> Iterator[Equation]:
             yield eq
 
 
-def find_tables_in_file(data: str) -> Iterator[Equation]:
+def find_tables_in_file(data: str, filename: str) -> Iterator[Equation]:
     options = [
         ("\\begin{table}", "\\end{table}", "table"),
         ("\\begin{table*}", "\\end{table*}", "table"),
@@ -198,7 +200,7 @@ def find_tables_in_file(data: str) -> Iterator[Equation]:
 
         for eq in find_in_file(a, b, data):
             if eq.label and not is_table_label(eq.label):
-                logger.error("Found weird label", label=eq.label, eq=eq)
+                logger.error("Found weird label", filename=filename, label=eq.label, eq=eq)
                 continue
 
             translation = (
@@ -249,10 +251,15 @@ def main() -> None:
     parser.add_option("--output", help="Output directory")
     parser.add_option("--search", help="Search directory")
     parser.add_option("--root", help="What to consider the root directory (parent of --search)")
+    parser.add_option(
+        "--add-preamble", help="List of .tex files to add as preamble", default=[], action="append"
+    )
     (options, args) = parser.parse_args()  # @UnusedVariable
     if args:
         raise Exception()
     out = options.output
+
+    preambles = options.add_preamble
 
     search = options.search
     if options.root is None:
@@ -264,17 +271,26 @@ def main() -> None:
         rel_filename = os.path.relpath(filename, root)
         # logger.info(filename=filename, rel_filename=rel_filename)
         data0 = read_ustring_from_utf8_file(filename)
+        if TAG_SKIP in data0:
+            logger.info(f"Skipping because found tag {TAG_SKIP}", filename=filename)
+            continue
+
         data = change_tex_comments(data0)
-        equations = list(find_equation_in_file(data))
-        others = list(find_others(data))
+
+        equations = list(find_equation_in_file(data, filename))
+        others = list(find_others(data, filename))
         # equations = sorted(equations, key=(lambda x: x.start))
-        definitions = list(find_definition_in_file(data))
-        tables = list(find_tables_in_file(data))
+        definitions = list(find_definition_in_file(data, filename))
+        tables = list(find_tables_in_file(data, filename))
         stuff = equations + definitions + tables + others
         if stuff and False:
             logger.info(f=filename, n=len(equations), df=len(definitions))
 
         known_labels = {}
+        extension = ".texi"
+        prefixes = set()
+        base, _ = os.path.splitext(rel_filename)
+        output_dir_for_file = os.path.join(out, base)
         for i, eq in enumerate(stuff):
             currfile, _ = os.path.splitext(os.path.basename(filename))
             if not eq.label:
@@ -290,10 +306,52 @@ def main() -> None:
                 raise ZValueError(msg, label=eq.label, filename=filename, eq1=known_labels[eq.label], eq2=eq)
             known_labels[eq.label] = eq
             label = eq.label.replace(":", "_")
-            base, _ = os.path.splitext(rel_filename)
             pre = f"{i:03d}-"
-            fn = os.path.join(out, base, pre + label + ".texi")
-            write_ustring_to_utf8_file(eq.translation, fn, quiet=True)
+            bn = pre + label + extension
+            prefixes.add(pre + label)
+
+            fn = os.path.join(output_dir_for_file, bn)
+            data = ""
+            for p in preambles:
+                p = os.path.abspath(p)
+                data += f"\\input{{{p}}}\n"
+            data += eq.translation
+
+            write_ustring_to_utf8_file(data, fn, quiet=True)
+        # find all files in output_dir_for_file that are not in basenames_created
+
+        if prefixes:
+            basen: str
+            toremove = set()
+
+            for basen in os.listdir(output_dir_for_file):
+                fn = os.path.join(output_dir_for_file, basen)
+                if not os.path.isfile(fn):
+                    continue
+                prefix, ext = os.path.splitext(basen)
+                if ext != extension:
+                    continue
+
+                if prefix not in prefixes:
+                    toremove.add(prefix)
+
+                # os.remove(os.path.join(output_dir_for_file, fn))
+                #
+            if toremove:
+                logger.info(
+                    filename=filename,
+                    good=prefixes,
+                    toremove=toremove,
+                )
+                for basen in os.listdir(output_dir_for_file):
+                    fn = os.path.join(output_dir_for_file, basen)
+                    if not os.path.isfile(fn):
+                        continue
+
+                    prefix, ext = os.path.splitext(basen)
+                    if prefix in toremove:
+                        logger.info(f"Removing {fn}")
+                        os.remove(fn)
 
 
 if __name__ == "__main__":
