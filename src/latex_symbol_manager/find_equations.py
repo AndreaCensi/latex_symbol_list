@@ -5,7 +5,7 @@ from optparse import OptionParser
 from typing import Iterator, List, Optional, Tuple, Union
 
 from zuper_commons.fs import read_ustring_from_utf8_file, write_ustring_to_utf8_file
-from zuper_commons.types import ZValueError
+from zuper_commons.types import add_context, ZValueError
 from zuper_utils_where import line_and_col
 
 from . import logger
@@ -294,13 +294,14 @@ def main() -> None:
         for i, eq in enumerate(stuff):
             currfile, _ = os.path.splitext(os.path.basename(filename))
             if not eq.label:
-                if not any(x in eq.a for x in ["equation", "align", "table", "lemma"]):
-                    line, col = line_and_col(eq.start, data)
-                    content = eq.a + eq.content + eq.b
-                    logger.warning(
-                        f"No label for chunk in {filename}:{line + 1} col {col + 1}", content=content
-                    )
-                continue
+                with add_context(filename=filename, eq=eq, data=data):
+                    if not any(x in eq.a for x in ["equation", "align", "table", "lemma"]):
+                        line, col = line_and_col(eq.start, data)
+                        content = eq.a + eq.content + eq.b
+                        logger.warning(
+                            f"No label for chunk in {filename}:{line + 1} col {col + 1}", content=content
+                        )
+                    continue
             if eq.label in known_labels:
                 msg = "Found two identical labels"
                 raise ZValueError(msg, label=eq.label, filename=filename, eq1=known_labels[eq.label], eq2=eq)
@@ -311,13 +312,13 @@ def main() -> None:
             prefixes.add(pre + label)
 
             fn = os.path.join(output_dir_for_file, bn)
-            data = ""
+            data0 = ""
             for p in preambles:
                 p = os.path.abspath(p)
-                data += f"\\input{{{p}}}\n"
-            data += eq.translation
+                data0 += f"\\input{{{p}}}\n"
+            data0 += eq.translation
 
-            write_ustring_to_utf8_file(data, fn, quiet=True)
+            write_ustring_to_utf8_file(data0, fn, quiet=True)
         # find all files in output_dir_for_file that are not in basenames_created
 
         if prefixes:

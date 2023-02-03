@@ -38,6 +38,7 @@ def parse_stream(stream, filename, line_count=0):
 
     for line in peek:
         where = Where(filename, count_lines.count, line)
+        line = line.replace("providecommand", "newcommand")
         m = re.match(r"\s*\\\w?\w?newcommand{\\(\w+)}{(.*)}\s*%?(.*)", line)
         if m:
             symbol = "\\" + m.group(1)
