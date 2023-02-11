@@ -24,7 +24,7 @@
   },
   "zip_safe": true,
   "include_package_data": true,
-  "packages": [
+  "modules": [
     "latex_symbol_manager"
   ],
   "version": "7.2",

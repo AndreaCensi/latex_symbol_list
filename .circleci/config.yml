@@ -23,6 +23,7 @@ jobs:
       DEPS_INSTALL_TIMEOUT: 10m
       COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests
       TEST_PACKAGES: latex_symbol_manager_tests
+      PIP_INDEX_URL: ${PIP_INDEX_URL_SRC}
     docker:
     - image: ${DOCKER_REGISTRY}/${DOCKER_TARGET_ORG}/${DOCKER_REPO_PREFIX}zuper-ci-3.10:${Z_DISTRO}
       auth:
@@ -177,6 +178,7 @@ jobs:
       DEPS_INSTALL_TIMEOUT: 10m
       COVER_PACKAGES: latex_symbol_manager,latex_symbol_manager_tests
       TEST_PACKAGES: latex_symbol_manager_tests
+      PIP_INDEX_URL: ${PIP_INDEX_URL_SRC}
     docker:
     - image: ${DOCKER_REGISTRY}/${DOCKER_TARGET_ORG}/${DOCKER_REPO_PREFIX}zuper-ci-3.11:${Z_DISTRO}
       auth:
@@ -321,4 +323,4 @@ jobs:
           ./codecov  
     resource_class: small
 
-# sigil 6c2eef177175349de956600c2b7b7a45
+# sigil 9df84ccfbb285d605337407aadb3ba8a
