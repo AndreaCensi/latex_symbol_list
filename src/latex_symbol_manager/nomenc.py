@@ -82,7 +82,7 @@ def nomenc_main(args):
                 (not symbol.desc) and (not symbol.example) and (SEE_ALSO not in symbol.other)
             )
         else:
-            assert False, style
+            raise AssertionError(style)
 
     if not allow_empty:
         for section_name, section in sections.items():
@@ -169,7 +169,7 @@ def create_table_nomenclature(
                     row.cell_tex("\\textbf{defined in}")
                     row.cell_tex("\\textbf{first use}")
                 else:
-                    assert False
+                    raise AssertionError(style)
 
             table.hline()
             table.hline()
@@ -212,7 +212,6 @@ def create_table_nomenclature(
                     #     continue
 
                     if s.nomenclature is None:
-
                         if s.nargs != 0:
                             warn(
                                 f"Skipping symbol {s.symbol} because it has args.",

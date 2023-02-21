@@ -35,7 +35,6 @@ def main():
             sys.stdout.write(el.line)
             sys.stdout.write("\n")
         elif isinstance(el, Symbol):
-
             if options.select is not None:
                 if not options.select in el.other:
                     comment(el, "Skipped because no field %r" % options.select)
@@ -80,7 +79,6 @@ def main():
             pass
         else:
             raise ParsingError("Unknown element: {0}".format(el), el.where)
-            assert False
 
 
 if __name__ == "__main__":

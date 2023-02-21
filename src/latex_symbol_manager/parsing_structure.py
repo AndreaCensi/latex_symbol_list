@@ -66,7 +66,7 @@ def parse_symbols(
         elif isinstance(el, OtherLine):
             yield el
         else:
-            assert False
+            raise AssertionError(el)
 
 
 def create_section(el, peek, sections, name, description) -> SymbolSection:
