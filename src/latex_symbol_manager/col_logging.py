@@ -3,8 +3,6 @@ import logging
 logging.basicConfig()
 import platform
 
-from typing import List
-
 __all__ = ["add_coloring_to_emit_ansi"]
 
 
