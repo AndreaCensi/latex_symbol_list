@@ -152,7 +152,6 @@ def find_definition_in_file(data: str, filename: str) -> Iterator[Equation]:
         ("\\begin{proposition*}", "\\end{proposition*}", "proposition*"),
     ]
     for a, b, newenv in options:
-
         for eq in find_in_file(a, b, data):
             if eq.label and not is_definition_label(eq.label):
                 logger.error("Found weird label", filename=filename, label=eq.label, eq=eq)
@@ -174,7 +173,6 @@ def find_others(data: str, filename: str) -> Iterator[Equation]:
         ("\\begin{lemma*}", "\\end{lemma*}", "lemma*", ["lem"]),
     ]
     for a, b, newenv, labelprefixes in options:
-
         for eq in find_in_file(a, b, data):
             if eq.label and not get_label_prefix(eq.label) in labelprefixes:
                 logger.error("Found weird label", filename=filename, label=eq.label, eq=eq)
@@ -197,7 +195,6 @@ def find_tables_in_file(data: str, filename: str) -> Iterator[Equation]:
         ("\\begin{margintable}", "\\end{margintable}", "table"),
     ]
     for a, b, newenv in options:
-
         for eq in find_in_file(a, b, data):
             if eq.label and not is_table_label(eq.label):
                 logger.error("Found weird label", filename=filename, label=eq.label, eq=eq)

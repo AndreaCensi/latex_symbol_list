@@ -37,7 +37,6 @@ def find_all_commands(filename: str) -> Dict[str, List[Usage]]:
     while True:
         changes = 0
         for start, stop in remove:
-
             if start in data:
                 i = data.index(start)
                 after = data[i:]
