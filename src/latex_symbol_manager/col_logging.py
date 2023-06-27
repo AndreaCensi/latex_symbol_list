@@ -3,7 +3,9 @@ import logging
 logging.basicConfig()
 import platform
 
-__all__ = ["add_coloring_to_emit_ansi"]
+__all__ = [
+    "add_coloring_to_emit_ansi",
+]
 
 
 def add_coloring_to_emit_ansi(fn):
