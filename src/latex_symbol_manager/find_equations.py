@@ -157,9 +157,7 @@ def find_definition_in_file(data: str, filename: str) -> Iterator[Equation]:
                 logger.error("Found weird label", filename=filename, label=eq.label, eq=eq)
                 continue
 
-            translation = (
-                "\\pagecolor{white}\n\\begin{" + newenv + "}" + eq.content + "\\end{" + newenv + "}\n"
-            )
+            translation = "\\pagecolor{white}\n\\begin{" + newenv + "}" + eq.content + "\\end{" + newenv + "}\n"
             translation = translation.replace("{equation}", "{equation*}")
             translation = translation.replace("{align}", "{align*}")
 
@@ -178,9 +176,7 @@ def find_others(data: str, filename: str) -> Iterator[Equation]:
                 logger.error("Found weird label", filename=filename, label=eq.label, eq=eq)
                 continue
 
-            translation = (
-                "\\pagecolor{white}\n\\begin{" + newenv + "}" + eq.content + "\\end{" + newenv + "}\n"
-            )
+            translation = "\\pagecolor{white}\n\\begin{" + newenv + "}" + eq.content + "\\end{" + newenv + "}\n"
             translation = translation.replace("{equation}", "{equation*}")
             translation = translation.replace("{align}", "{align*}")
 
@@ -248,9 +244,7 @@ def main() -> None:
     parser.add_option("--output", help="Output directory")
     parser.add_option("--search", help="Search directory")
     parser.add_option("--root", help="What to consider the root directory (parent of --search)")
-    parser.add_option(
-        "--add-preamble", help="List of .tex files to add as preamble", default=[], action="append"
-    )
+    parser.add_option("--add-preamble", help="List of .tex files to add as preamble", default=[], action="append")
     (options, args) = parser.parse_args()  # @UnusedVariable
     if args:
         raise Exception()
@@ -295,9 +289,7 @@ def main() -> None:
                     if not any(x in eq.a for x in ["equation", "align", "table", "lemma"]):
                         line, col = line_and_col(eq.start, data)
                         content = eq.a + eq.content + eq.b
-                        logger.warning(
-                            f"No label for chunk in {filename}:{line + 1} col {col + 1}", content=content
-                        )
+                        logger.warning(f"No label for chunk in {filename}:{line + 1} col {col + 1}", content=content)
                     continue
             if eq.label in known_labels:
                 msg = "Found two identical labels"
@@ -338,7 +330,7 @@ def main() -> None:
             if toremove:
                 logger.info(
                     filename=filename,
-                    good=prefixes,
+                    # good=prefixes,
                     toremove=toremove,
                 )
                 for basen in os.listdir(output_dir_for_file):
