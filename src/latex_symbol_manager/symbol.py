@@ -70,7 +70,6 @@ class Symbol(yaml.YAMLObject):
             tex = wrapper(self.tex)
 
         def single_def(cmd):
-
             if self.nargs:
                 params = "{%s}[%s]{%s}" % (cmd, self.nargs, tex)
             else:

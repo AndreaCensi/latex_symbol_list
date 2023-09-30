@@ -70,7 +70,6 @@ def write_symbol_rows(
             example = ""
             example_label = s.symbol
         else:
-
             if s.example is None:  # and s.nargs > 0:
                 put = ["a", "b", "c", "d", "e"]
                 args = "".join("{%s}" % _ for _ in put[: s.nargs])
@@ -120,9 +119,7 @@ def create_table(
 ):
     # logger.info(unused_symbols=unused_symbols)
     with latex_fragment(output) as fragment:
-
         with fragment.longtable(["l", "p{1cm}", "p{5cm}", "l", "l"]) as table:
-
             table.row_tex(
                 "\\textbf{command}",
                 "\\textbf{result}",
@@ -172,7 +169,6 @@ def create_table_minimal(
 ):
     with latex_fragment(output) as fragment:
         with fragment.longtable(["c", "l"]) as table:
-
             for section in sections:
                 with table.row() as row:
                     row.multicolumn_tex(2, "l", section.description)
