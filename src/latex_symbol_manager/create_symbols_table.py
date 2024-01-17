@@ -28,9 +28,7 @@ def raw_appearance(s):
     return color_rgb(texttt(s), [0.5, 0.5, 0.5])
 
 
-def write_symbol_rows(
-    s, table: Tabular, write_examples: bool, write_desc: bool, example_size: str, is_unused: bool
-):
+def write_symbol_rows(s, table: Tabular, write_examples: bool, write_desc: bool, example_size: str, is_unused: bool):
     x = "\\unused " if is_unused else ""
 
     firstusage = ""

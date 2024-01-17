@@ -64,11 +64,7 @@ def parse_stream(stream, filename, line_count=0):
                 tag = rest[:pos]
                 lines = [rest[pos + 1 :].strip()]
 
-                while (
-                    peek.lookahead(0)
-                    and is_comment(peek.lookahead(0))
-                    and not is_special_comment(peek.lookahead(0))
-                ):
+                while peek.lookahead(0) and is_comment(peek.lookahead(0)) and not is_special_comment(peek.lookahead(0)):
                     comment_line = next(peek)
                     # Strip empty comments
                     content = content_of_comment(comment_line)

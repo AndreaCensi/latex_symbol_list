@@ -19,9 +19,7 @@ def nomenc_main(args):
     parser.add_option("--only", help="YAML file containing the symbols that must be included.")
 
     parser.add_option("--style", default="small", help="One of  (small, medium, large)")
-    parser.add_option(
-        "--allow-empty", default=False, action="store_true", help="Also allow empty symbols descriptions"
-    )
+    parser.add_option("--allow-empty", default=False, action="store_true", help="Also allow empty symbols descriptions")
     parser.add_option("-v", "--verbose", default=False, action="store_true")
 
     (options, args) = parser.parse_args(args)  # @UnusedVariable

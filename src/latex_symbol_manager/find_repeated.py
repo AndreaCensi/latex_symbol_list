@@ -25,11 +25,7 @@ def main():
             ):
                 continue
 
-            balanced = (
-                (s.count("{") == s.count("}"))
-                and (s.count("(") == s.count(")"))
-                and (s.count("[") == s.count("]"))
-            )
+            balanced = (s.count("{") == s.count("}")) and (s.count("(") == s.count(")")) and (s.count("[") == s.count("]"))
             if not balanced:
                 continue
             if len(s) >= MIN_LEN:
