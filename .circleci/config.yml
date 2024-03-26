@@ -188,7 +188,7 @@ jobs:
 
     - run:
         name: Coverage report
-        when: always
+        # when: always
         command: |
           coverage combine || true
           coverage html -d out/coverage/${CIRCLE_NODE_INDEX} || true
@@ -204,7 +204,7 @@ jobs:
 
     - run:
         name: CodeCov
-        when: always
+        # when: always
         command: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
@@ -379,7 +379,7 @@ jobs:
 
     - run:
         name: Coverage report
-        when: always
+        # when: always
         command: |
           coverage combine || true
           coverage html -d out/coverage/${CIRCLE_NODE_INDEX} || true
@@ -395,11 +395,11 @@ jobs:
 
     - run:
         name: CodeCov
-        when: always
+        # when: always
         command: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
           ./codecov  
     resource_class: small
 
-# sigil 904c526a483dd8e200a70539d50e35f6
+# sigil f2255a35a41fb6a383d57be49c6692d5
