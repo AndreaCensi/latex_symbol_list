@@ -208,7 +208,7 @@ jobs:
         command: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
-          ./codecov  
+          timeout 1m ./codecov || true
     resource_class: small
   test-311-bin:
     environment:
@@ -399,7 +399,7 @@ jobs:
         command: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
-          ./codecov  
+          timeout 1m ./codecov || true
     resource_class: small
 
-# sigil f2255a35a41fb6a383d57be49c6692d5
+# sigil cfe27cdd14e879093cad513941eaf059
