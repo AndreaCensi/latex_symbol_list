@@ -1,7 +1,6 @@
 import re
 import sys
 from collections import defaultdict
-from typing import Dict, Set
 
 
 def main():
@@ -34,13 +33,13 @@ def main():
     for m in re.finditer("\\\\", data):
         process(m.start())
 
-    len_found: Dict[int, Set[str]] = defaultdict(set)
+    len_found: dict[int, set[str]] = defaultdict(set)
     for k, v in found.items():
         len_found[v].add(k)
 
     MIN_REP = 15
 
-    found_frequent: Set[str] = set()
+    found_frequent: set[str] = set()
     for k, v in len_found.items():
         if k > MIN_REP:
             found_frequent.update(v)

@@ -1,11 +1,11 @@
 import sys
 from optparse import OptionParser
-from typing import Collection, Dict, List, Literal
+from typing import Collection, Literal
 
 import yaml
+
 from latex_gen import latex_fragment
 from zuper_ipce import object_from_ipce
-
 from . import logger
 from .find_commands import Usage
 from .interface import parse_all_sections_symbols
@@ -26,8 +26,8 @@ def nomenc_main(args):
 
     style = options.style
     assert style in ("small", "medium", "large"), style
-    sections: Dict[str, SymbolSection]
-    symbols: Dict[str, Symbol]
+    sections: dict[str, SymbolSection]
+    symbols: dict[str, Symbol]
     sections, symbols = parse_all_sections_symbols(args)
     logger.info(f"Loaded {len(sections)} sections with {len(symbols)} symbols.\n")
     if not sections or not symbols:
@@ -37,7 +37,7 @@ def nomenc_main(args):
     if options.only:
         with open(options.only) as f:
             only_yaml = yaml.load(f, Loader=yaml.Loader)
-        only: Dict[str, List[Usage]] = object_from_ipce(only_yaml, Dict[str, List[Usage]])
+        only: dict[str, list[Usage]] = object_from_ipce(only_yaml, dict[str, list[Usage]])
 
         v: Symbol
         for k, v in symbols.items():
@@ -113,7 +113,7 @@ def nomenc_main(args):
     create_table_nomenclature(symbols, sections, style, sys.stdout)
 
 
-def order_sections(a: Dict[str, SymbolSection]) -> Dict[str, SymbolSection]:
+def order_sections(a: dict[str, SymbolSection]) -> dict[str, SymbolSection]:
     tops = {}
     for k, v in a.items():
         if v.parent is None:
@@ -133,8 +133,8 @@ def order_sections(a: Dict[str, SymbolSection]) -> Dict[str, SymbolSection]:
 
 
 def create_table_nomenclature(
-    only: Dict[str, Symbol],
-    sections: Dict[str, SymbolSection],
+    only: dict[str, Symbol],
+    sections: dict[str, SymbolSection],
     style: Literal["small", "medium", "large"],
     output,  # symbols_sort_key=lambda x: x.symbol.lower()
 ):

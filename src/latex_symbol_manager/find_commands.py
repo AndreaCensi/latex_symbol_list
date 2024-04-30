@@ -1,11 +1,10 @@
 import re
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Optional
 
 from zuper_commons.fs import read_ustring_from_utf8_file
 from zuper_commons.text import remove_hash_comments
-
 from . import logger
 
 command_pattern = r"(\\[a-zA-Z]+)"  # XXX: need to exclude '_'
@@ -22,9 +21,9 @@ class Usage:
     last_label: Optional[str]
 
 
-def find_all_commands(filename: str) -> Dict[str, List[Usage]]:
+def find_all_commands(filename: str) -> dict[str, list[Usage]]:
     """Finds all TeX commands used in the file."""
-    commands: Dict[str, List[Usage]] = defaultdict(list)
+    commands: dict[str, list[Usage]] = defaultdict(list)
     found = set()
     last_label = None
     data = read_ustring_from_utf8_file(filename)
@@ -67,5 +66,5 @@ def find_all_commands(filename: str) -> Dict[str, List[Usage]]:
     return dict(commands)
 
 
-def find_all_commands_in_string(s: str) -> List[str]:
+def find_all_commands_in_string(s: str) -> list[str]:
     return list(command_regex.findall(s))

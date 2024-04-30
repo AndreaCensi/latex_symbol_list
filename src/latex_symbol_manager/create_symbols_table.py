@@ -1,7 +1,7 @@
 import sys
 import traceback
 from optparse import OptionParser
-from typing import Collection, Dict, List, Set
+from typing import Collection
 
 import yaml
 
@@ -17,7 +17,7 @@ from latex_gen import (
 from latex_gen.tabular import Tabular
 from zuper_ipce import object_from_ipce
 from . import logger
-from .find_commands import find_all_commands_in_string, Usage
+from .find_commands import Usage, find_all_commands_in_string
 from .interface import parse_all_sections_symbols
 from .nomenc import iflabelexists
 from .structures import NO_INLINE, NO_SUMMARY, SymbolSection
@@ -108,7 +108,7 @@ def write_symbol_rows(s, table: Tabular, write_examples: bool, write_desc: bool,
 
 def create_table(
     sections,
-    unused_symbols: Set[str],
+    unused_symbols: set[str],
     output,
     write_examples=True,
     write_desc=True,
@@ -161,7 +161,7 @@ def create_table(
 
 def create_table_minimal(
     sections,
-    unused_symbols: Set[str],
+    unused_symbols: set[str],
     output,
     symbols_sort_key=lambda x: x.symbol.lower(),
 ):
@@ -186,7 +186,7 @@ def create_table_minimal(
                         row.cell_tex(s.desc)
 
 
-def get_symbols_used_in_definitions(symbols: Dict[str, Symbol]) -> Set[str]:
+def get_symbols_used_in_definitions(symbols: dict[str, Symbol]) -> set[str]:
     res = set()
     for s in symbols.values():
         defi = s.tex
@@ -229,7 +229,7 @@ def main():
         if options.only:
             with open(options.only) as f:
                 only_yaml = yaml.load(f, Loader=yaml.Loader)
-            only = object_from_ipce(only_yaml, Dict[str, List[Usage]])
+            only = object_from_ipce(only_yaml, dict[str, list[Usage]])
 
             more = get_symbols_used_in_definitions(symbols)
             if options.verbose:
@@ -341,7 +341,7 @@ def main():
         sys.exit(-1)
 
 
-def show_hierarchy(s: Dict[str, SymbolSection]):
+def show_hierarchy(s: dict[str, SymbolSection]):
     ss = {}
     for k, v in s.items():
         ss[k] = list(v.subs)

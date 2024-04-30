@@ -1,4 +1,4 @@
-from typing import Generic, Iterator, List, Optional, TypeVar
+from typing import Generic, Iterator, Optional, TypeVar
 
 X = TypeVar("X")
 
@@ -9,7 +9,7 @@ __all__ = [
 
 class Lookahead(Generic[X]):
     iter: Iterator[X]
-    buffer: List[X]
+    buffer: list[X]
 
     def __init__(self, iterator: Iterator[X]):
         self.iter = iterator

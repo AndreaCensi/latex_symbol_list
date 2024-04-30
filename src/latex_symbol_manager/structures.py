@@ -1,6 +1,6 @@
 from collections import namedtuple
 from dataclasses import dataclass
-from typing import Dict, NewType, Optional
+from typing import NewType, Optional
 
 from .symbol import Symbol
 
@@ -57,12 +57,12 @@ class Where:
 class SymbolSection:
     name: SectionName
     description: str
-    symbols: Dict[str, Symbol]
+    symbols: dict[str, Symbol]
     parent: "Optional[str]"
-    subs: "Dict[SectionName, SymbolSection]"
+    subs: "dict[SectionName, SymbolSection]"
     where: Where
     definition_order: int
-    attrs: Dict[str, str]
+    attrs: dict[str, str]
 
 
 class ParsingError(Exception):

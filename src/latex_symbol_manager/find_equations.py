@@ -2,12 +2,11 @@ import glob
 import os
 from dataclasses import dataclass
 from optparse import OptionParser
-from typing import Iterator, List, Optional, Tuple, Union
+from typing import Iterator, Optional, Union
 
 from zuper_commons.fs import read_ustring_from_utf8_file, write_ustring_to_utf8_file
-from zuper_commons.types import add_context, ZValueError
+from zuper_commons.types import ZValueError, add_context
 from zuper_utils_where import line_and_col
-
 from . import logger
 
 usage = """ 
@@ -27,7 +26,7 @@ class Equation:
     translation: Optional[str]
 
 
-def find_chunks(a: str, b: str, data: str) -> Iterator[Tuple[int, str]]:
+def find_chunks(a: str, b: str, data: str) -> Iterator[tuple[int, str]]:
     nbef = 0
     while data:
         if a not in data:
@@ -86,7 +85,7 @@ class Found:
     postfix: str
 
 
-def get_subs(chunk: str, possibilities: List[Tuple[str, str]]) -> Iterator[Union[str, Found]]:
+def get_subs(chunk: str, possibilities: list[tuple[str, str]]) -> Iterator[Union[str, Found]]:
     for start, stop in possibilities:
         if start in chunk:
             i = chunk.index(start)

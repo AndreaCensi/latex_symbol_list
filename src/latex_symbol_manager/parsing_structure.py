@@ -1,5 +1,5 @@
 import sys
-from typing import Dict, Iterator, Optional, Union
+from typing import Iterator, Optional, Union
 
 from . import (
     logger,
@@ -9,8 +9,8 @@ from .parsing import parse_stream
 from .structures import (
     KNOWN_TAGS_SECTIONS,
     KNOWN_TAGS_SYMBOLS,
-    NewCommand,
     NOMENC,
+    NewCommand,
     OtherLine,
     ParsingError,
     SEE_ALSO,
@@ -31,8 +31,8 @@ def warning(s, el=None):
 def parse_symbols(
     stream,
     filename,
-    sections: Optional[Dict[str, SymbolSection]] = None,
-    symbols: Optional[Dict[str, Symbol]] = None,
+    sections: Optional[dict[str, SymbolSection]] = None,
+    symbols: Optional[dict[str, Symbol]] = None,
 ) -> Iterator[Union[OtherLine, SymbolSection, Symbol]]:
     current_section = None
     if sections is None:

@@ -1,11 +1,10 @@
 from collections import defaultdict
 from optparse import OptionParser
-from typing import Dict, List
 
 import yaml
-from zuper_ipce import IESO, ipce_from_object
 
-from .find_commands import find_all_commands, Usage
+from zuper_ipce import IESO, ipce_from_object
+from .find_commands import Usage, find_all_commands
 
 usage = """ 
 
@@ -22,7 +21,7 @@ def main():
     filenames = args
 
     filenames = sorted(filenames)
-    symbols: Dict[str, List[Usage]] = defaultdict(list)
+    symbols: dict[str, list[Usage]] = defaultdict(list)
     for filename in filenames:
         fs = find_all_commands(filename)
         for k, v in fs.items():
