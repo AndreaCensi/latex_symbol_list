@@ -1,13 +1,11 @@
-from typing import Generic, Iterator, Optional, TypeVar
-
-X = TypeVar("X")
+from typing import Iterator, Optional
 
 __all__ = [
     "Lookahead",
 ]
 
 
-class Lookahead(Generic[X]):
+class Lookahead[X]:
     iter: Iterator[X]
     buffer: list[X]
 
