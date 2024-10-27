@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 import yaml
 
 
@@ -27,8 +25,8 @@ class Symbol(yaml.YAMLObject):
         nargs=0,  # @ReservedAssignment
         where=None,
         nomenclature=None,
-        other: Dict = None,
-        usages: List = None,
+        other: dict = None,
+        usages: list = None,
     ):
         self.symbol = symbol
         self.tex = tex
