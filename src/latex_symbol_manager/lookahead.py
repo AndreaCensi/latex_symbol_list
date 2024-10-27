@@ -1,4 +1,4 @@
-from typing import Iterator, Optional
+from collections.abc import Iterator
 
 __all__ = [
     "Lookahead",
@@ -22,7 +22,7 @@ class Lookahead[X]:
         else:
             return next(self.iter)
 
-    def lookahead(self, n: int) -> Optional[X]:
+    def lookahead(self, n: int) -> X | None:
         """Return an item n entries ahead in the iteration."""
         while n >= len(self.buffer):
             try:

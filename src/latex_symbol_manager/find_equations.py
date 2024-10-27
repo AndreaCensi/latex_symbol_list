@@ -1,11 +1,11 @@
 import glob
 import os
+from collections.abc import Iterator
 from dataclasses import dataclass
 from optparse import OptionParser
-from typing import Iterator, Optional, Union
 
 from zuper_commons.fs import read_ustring_from_utf8_file, write_ustring_to_utf8_file
-from zuper_commons.types import ZValueError, add_context
+from zuper_commons.types import add_context, ZValueError
 from zuper_utils_where import line_and_col
 from . import logger
 
@@ -19,11 +19,11 @@ TAG_SKIP = "lsm-skip"
 @dataclass
 class Equation:
     start: int
-    label: Optional[str]
+    label: str | None
     a: str
     content: str
     b: str
-    translation: Optional[str]
+    translation: str | None
 
 
 def find_chunks(a: str, b: str, data: str) -> Iterator[tuple[int, str]]:
@@ -45,7 +45,7 @@ def find_chunks(a: str, b: str, data: str) -> Iterator[tuple[int, str]]:
         nbef += i + len(a) + len(chunk) + len(b)
 
 
-def find_label(data: str) -> Optional[str]:
+def find_label(data: str) -> str | None:
     start = "\\label{"
     if start in data:
         i = data.index(start)
@@ -85,7 +85,7 @@ class Found:
     postfix: str
 
 
-def get_subs(chunk: str, possibilities: list[tuple[str, str]]) -> Iterator[Union[str, Found]]:
+def get_subs(chunk: str, possibilities: list[tuple[str, str]]) -> Iterator[str | Found]:
     for start, stop in possibilities:
         if start in chunk:
             i = chunk.index(start)

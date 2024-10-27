@@ -38,7 +38,7 @@ def main():
             if x == "all":
                 lx.extend(list(sections.values()))
             if not lx:
-                raise Exception("Section %s not found in %s" % (x, list(sections.keys())))
+                raise Exception("Section {} not found in {}".format(x, list(sections.keys())))
 
             l.extend(lx)
         return l

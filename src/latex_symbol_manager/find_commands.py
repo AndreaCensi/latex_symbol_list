@@ -1,7 +1,6 @@
 import re
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Optional
 
 from zuper_commons.fs import read_ustring_from_utf8_file
 from zuper_commons.text import remove_hash_comments
@@ -18,7 +17,7 @@ label_regex = re.compile(label_pattern)
 class Usage:
     filename: str
     line: int
-    last_label: Optional[str]
+    last_label: str | None
 
 
 def find_all_commands(filename: str) -> dict[str, list[Usage]]:

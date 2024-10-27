@@ -8,7 +8,7 @@ def main():
     MAX_LEN = 30
     MIN_LEN = 10
 
-    found = defaultdict(lambda: 0)
+    found = defaultdict(int)
 
     def process(i: int):
         for l in range(MIN_LEN, MAX_LEN):

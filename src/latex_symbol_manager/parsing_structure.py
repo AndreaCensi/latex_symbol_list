@@ -1,5 +1,5 @@
 import sys
-from typing import Iterator, Optional, Union
+from collections.abc import Iterator
 
 from . import (
     logger,
@@ -9,8 +9,8 @@ from .parsing import parse_stream
 from .structures import (
     KNOWN_TAGS_SECTIONS,
     KNOWN_TAGS_SYMBOLS,
-    NOMENC,
     NewCommand,
+    NOMENC,
     OtherLine,
     ParsingError,
     SEE_ALSO,
@@ -23,7 +23,7 @@ from .symbol import NomenclatureEntry, Symbol
 
 def warning(s, el=None):
     if el:
-        logger.warn("Warning: %s\n @ %s" % (s, el.where))
+        logger.warn("Warning: {}\n @ {}".format(s, el.where))
     else:
         logger.warn("Warning: %s" % s)
 
@@ -31,9 +31,9 @@ def warning(s, el=None):
 def parse_symbols(
     stream,
     filename,
-    sections: Optional[dict[str, SymbolSection]] = None,
-    symbols: Optional[dict[str, Symbol]] = None,
-) -> Iterator[Union[OtherLine, SymbolSection, Symbol]]:
+    sections: dict[str, SymbolSection] | None = None,
+    symbols: dict[str, Symbol] | None = None,
+) -> Iterator[OtherLine | SymbolSection | Symbol]:
     current_section = None
     if sections is None:
         sections = {}
@@ -49,7 +49,7 @@ def parse_symbols(
         elif isinstance(el, SpecialComment):
             if el.tag == "section":
                 if not ":" in el.lines[0] or len(el.lines) > 1:
-                    err = "Malformed section tag: {0!r}".format(el)
+                    err = f"Malformed section tag: {el!r}"
                     raise ParsingError(err, el.where)
 
                 name, sep, description = el.lines[0].partition(":")
@@ -76,7 +76,7 @@ def create_section(el, peek, sections, name, description) -> SymbolSection:
             sections[name].description = description
             return name
         else:
-            err = "Already know section %r from %r." % (name, sections[name].where)
+            err = "Already know section {!r} from {!r}.".format(name, sections[name].where)
             raise ParsingError(err, el.where)
 
     # # Check subs
@@ -119,7 +119,7 @@ def load_command(peek, el, current_section, symbols):
     other = load_attributes(peek, KNOWN_TAGS_SYMBOLS)
 
     if TODO in other:
-        logger.warn("TODO (%s): %s" % (el.command, other[TODO]))
+        logger.warn("TODO ({}): {}".format(el.command, other[TODO]))
 
     if NOMENC in other:
         n = other[NOMENC].strip()
@@ -140,7 +140,7 @@ def load_command(peek, el, current_section, symbols):
     tag = current_section.name
 
     if el.command in symbols:
-        err = "Already know symbol %r from %r." % (
+        err = "Already know symbol {!r} from {!r}.".format(
             el.command,
             symbols[el.command].where,
         )
@@ -150,7 +150,7 @@ def load_command(peek, el, current_section, symbols):
     for k, v in list(current_section.attrs.items()):
         ok_to_disagree = [SEE_ALSO]
         if k in other and other[k] != v and not k in ok_to_disagree:
-            warning("Note: tag %r = %r disagrees with section (%r)" % (k, other[k], v), el)
+            warning("Note: tag {!r} = {!r} disagrees with section ({!r})".format(k, other[k], v), el)
         else:
             other[k] = v
 

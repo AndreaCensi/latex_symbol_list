@@ -1,7 +1,7 @@
 import sys
 import traceback
+from collections.abc import Collection
 from optparse import OptionParser
-from typing import Collection
 
 import yaml
 
@@ -17,7 +17,7 @@ from latex_gen import (
 from latex_gen.tabular import Tabular
 from zuper_ipce import object_from_ipce
 from . import logger
-from .find_commands import Usage, find_all_commands_in_string
+from .find_commands import find_all_commands_in_string, Usage
 from .interface import parse_all_sections_symbols
 from .nomenc import iflabelexists
 from .structures import NO_INLINE, NO_SUMMARY, SymbolSection
@@ -274,7 +274,7 @@ def main():
         # which = args
         which = None  # XXX add switch
         if which:
-            selected = dict([(k, v) for (k, v) in list(sections.items()) if k in which])
+            selected = {k: v for (k, v) in list(sections.items()) if k in which}
         else:
             selected = sections
 
@@ -328,7 +328,7 @@ def main():
 
         styles = {"minimal": minimal, "full": full, "small": small, "medium": medium}
         if options.style not in styles:
-            msg = "No known style %r. Valid options: %s." % (
+            msg = "No known style {!r}. Valid options: {}.".format(
                 options.style,
                 list(styles.keys()),
             )
