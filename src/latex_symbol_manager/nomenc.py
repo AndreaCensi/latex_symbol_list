@@ -193,7 +193,7 @@ def create_table_nomenclature(
                         sct = "-"
 
                     levels = section.name.count("/")
-                    SP = "\quad\quad"
+                    SP = "\\quad\\quad"
                     if section.parent is None:
                         row.multicolumn_tex(4, "l", SP * levels + f"\\nomencsectionname{{{sct}}}")
                     else:
