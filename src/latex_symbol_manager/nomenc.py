@@ -1,16 +1,19 @@
 import sys
 from optparse import OptionParser
-from typing import Collection, Literal
+from typing import Collection
+from typing import Literal
 
 import yaml
-
 from latex_gen import latex_fragment
 from zuper_ipce import object_from_ipce
+
 from . import logger
 from .find_commands import Usage
 from .interface import parse_all_sections_symbols
 from .script_utils import wrap_script_entry_point
-from .structures import NOMENC_EXCLUDE, SEE_ALSO, SymbolSection
+from .structures import NOMENC_EXCLUDE
+from .structures import SEE_ALSO
+from .structures import SymbolSection
 from .symbol import Symbol
 
 

@@ -4,9 +4,12 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from optparse import OptionParser
 
-from zuper_commons.fs import read_ustring_from_utf8_file, write_ustring_to_utf8_file
-from zuper_commons.types import add_context, ZValueError
+from zuper_commons.fs import read_ustring_from_utf8_file
+from zuper_commons.fs import write_ustring_to_utf8_file
+from zuper_commons.types import ZValueError
+from zuper_commons.types import add_context
 from zuper_utils_where import line_and_col
+
 from . import logger
 
 usage = """ 
@@ -135,7 +138,7 @@ def find_equation_in_file(data: str, filename: str) -> Iterator[Equation]:
                 if chunk.endswith(x):
                     chunk = chunk[:-1]
                 for n in range(10):
-                    s = f'{x}{n * " "}\\\\'
+                    s = f"{x}{n * ' '}\\\\"
                     chunk = chunk.replace(s, "\\\\")
             eq.content = chunk
             translation = "\\begin{" + newenv + "}" + eq.content + "\\end{" + newenv + "}\n"

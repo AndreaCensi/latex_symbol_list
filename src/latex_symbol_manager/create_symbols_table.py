@@ -4,23 +4,24 @@ from collections.abc import Collection
 from optparse import OptionParser
 
 import yaml
-
-from latex_gen import (
-    color_rgb,
-    emph,
-    footnotesize,
-    latex_escape,
-    latex_fragment,
-    texttt,
-    verbatim_soft,
-)
+from latex_gen import color_rgb
+from latex_gen import emph
+from latex_gen import footnotesize
+from latex_gen import latex_escape
+from latex_gen import latex_fragment
+from latex_gen import texttt
+from latex_gen import verbatim_soft
 from latex_gen.tabular import Tabular
 from zuper_ipce import object_from_ipce
+
 from . import logger
-from .find_commands import find_all_commands_in_string, Usage
+from .find_commands import Usage
+from .find_commands import find_all_commands_in_string
 from .interface import parse_all_sections_symbols
 from .nomenc import iflabelexists
-from .structures import NO_INLINE, NO_SUMMARY, SymbolSection
+from .structures import NO_INLINE
+from .structures import NO_SUMMARY
+from .structures import SymbolSection
 from .symbol import Symbol
 
 

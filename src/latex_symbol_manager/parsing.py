@@ -2,7 +2,11 @@ import re
 import sys
 
 from .lookahead import Lookahead
-from .structures import NewCommand, OtherLine, ParsingError, SpecialComment, Where
+from .structures import NewCommand
+from .structures import OtherLine
+from .structures import ParsingError
+from .structures import SpecialComment
+from .structures import Where
 
 
 def strip_empty(stream):

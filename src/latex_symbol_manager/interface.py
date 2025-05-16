@@ -2,7 +2,8 @@ import sys
 
 from . import logger
 from .parsing_structure import parse_symbols
-from .structures import SectionName, SymbolSection
+from .structures import SectionName
+from .structures import SymbolSection
 from .symbol import Symbol
 
 __all__ = [

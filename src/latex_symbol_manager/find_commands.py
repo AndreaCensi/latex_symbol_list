@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from zuper_commons.fs import read_ustring_from_utf8_file
 from zuper_commons.text import remove_hash_comments
+
 from . import logger
 
 command_pattern = r"(\\[a-zA-Z]+)"  # XXX: need to exclude '_'

@@ -1,24 +1,21 @@
 import sys
 from collections.abc import Iterator
 
-from . import (
-    logger,
-)
+from . import logger
 from .lookahead import Lookahead
 from .parsing import parse_stream
-from .structures import (
-    KNOWN_TAGS_SECTIONS,
-    KNOWN_TAGS_SYMBOLS,
-    NewCommand,
-    NOMENC,
-    OtherLine,
-    ParsingError,
-    SEE_ALSO,
-    SpecialComment,
-    SymbolSection,
-    TODO,
-)
-from .symbol import NomenclatureEntry, Symbol
+from .structures import KNOWN_TAGS_SECTIONS
+from .structures import KNOWN_TAGS_SYMBOLS
+from .structures import NOMENC
+from .structures import SEE_ALSO
+from .structures import TODO
+from .structures import NewCommand
+from .structures import OtherLine
+from .structures import ParsingError
+from .structures import SpecialComment
+from .structures import SymbolSection
+from .symbol import NomenclatureEntry
+from .symbol import Symbol
 
 
 def warning(s, el=None):

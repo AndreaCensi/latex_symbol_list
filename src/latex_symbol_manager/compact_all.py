@@ -2,7 +2,9 @@ import sys
 from optparse import OptionParser
 
 from .interface import parse_all_symbols
-from .structures import OtherLine, ParsingError, SymbolSection
+from .structures import OtherLine
+from .structures import ParsingError
+from .structures import SymbolSection
 from .symbol import Symbol
 
 

@@ -2,9 +2,11 @@ from collections import defaultdict
 from optparse import OptionParser
 
 import yaml
+from zuper_ipce import IESO
+from zuper_ipce import ipce_from_object
 
-from zuper_ipce import IESO, ipce_from_object
-from .find_commands import find_all_commands, Usage
+from .find_commands import Usage
+from .find_commands import find_all_commands
 
 usage = """ 
 
