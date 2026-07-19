@@ -2,8 +2,7 @@ version: 2.1
 parameters:
   context_name:
     type: string
-    default: 
-      <<#pipeline.git.branch>><<pipeline.parameters.branch>><</pipeline.git.branch>><<^pipeline.git.branch>>default_context<</pipeline.git.branch>>
+    default: z7-stage
 workflows:
   version: 2
   test:
@@ -201,4 +200,4 @@ jobs:
           timeout 1m ./codecov || true
     resource_class: small
 
-# sigil 76ee10f3720d4655035033bbe9851f4e
+# sigil 1f3342735bc85038546b0e6797f41a69
