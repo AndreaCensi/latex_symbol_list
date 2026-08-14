@@ -1,6 +1,17 @@
 all:
 	@echo
 
+out=out
+tested_packages := latex_symbol_manager_tests
+deployed_packages := latex_symbol_manager
+test_environment := DISABLE_CONTRACTS=1
+
+ifneq ($(filter contracts,$(deployed_packages)),)
+test_environment :=
+endif
+
+.PHONY: all template bump upload black install-deps install-testing-deps test coverage-combine docs
+
 
 template:
 	zuper-cli template
@@ -29,68 +40,28 @@ install-testing-deps:
 	pip install \
 		pipdeptree\
 		bumpversion\
-		nose\
 		nose2\
 		nose2-html-report\
-		nose-parallel\
-		nose_xunitmp\
 		pre-commit\
-		rednose\
 		coverage\
 		codecov\
 		sphinx\
 		sphinx-rtd-theme
-cover_packages=latex_symbol_manager,latex_symbol_manager_tests,latex_symbol_manager_tests.test1
-
-# PROJECT_ROOT ?= /project
-# REGISTRY ?= docker.io
-# PIP_INDEX_URL ?= https://pypi.org/simple
-# BASE_IMAGE ?= python:3.7
-
-CIRCLE_NODE_INDEX ?= 0
-CIRCLE_NODE_TOTAL ?= 1
-
-out=out
-coverage_dir=$(out)/coverage
-tr=$(out)/test-results
-xunit_output=$(tr)/nose-$(CIRCLE_NODE_INDEX)-xunit.xml
-
-parallel=--processes=8 --process-timeout=1000 --process-restartworker
-coverage=--cover-html --cover-html-dir=$(coverage_dir) --cover-tests \
-            --with-coverage --cover-package=$(cover_packages)
-
-xunit=--with-xunit --xunit-file=$(xunit_output)
-xunitmp=--with-xunitmp --xunitmp-file=$(xunit_output)
-extra=--rednose --immediate
-
-clean:
-	coverage erase
-	rm -rf $(out) $(coverage_dir) $(tr)
 
 test:
-	mkdir -p  $(tr)
-	DISABLE_CONTRACTS=1 nosetests $(extra) $(coverage)  latex_symbol_manager_tests  -v --nologcapture $(xunit)
-
-
-test-parallel:
-	mkdir -p  $(tr)
-	DISABLE_CONTRACTS=1 nosetests $(extra) $(coverage) latex_symbol_manager_tests -v --nologcapture $(parallel) $(xunitmp)
-
-
-test-parallel-circle:
-	mkdir -p  $(tr)
-	DISABLE_CONTRACTS=1 \
-	NODE_TOTAL=$(CIRCLE_NODE_TOTAL) \
-	NODE_INDEX=$(CIRCLE_NODE_INDEX) \
-	nosetests $(coverage) $(xunitmp) latex_symbol_manager_tests  -v  $(parallel)
-
+	$(test_environment) python -m nose2 -v $(tested_packages)
 
 coverage-combine:
 	coverage combine
 
+ifneq (,)
+docs:
+	$(MAKE) -C docs
+else
 docs:
 	sphinx-build src $(out)/docs
+endif
 
 -include extra.mk
 
-# sigil 02a045ea15863e67a08b14fc9d9f342b
+# sigil 1bfb8e95155e79225cfa83967f741f82
