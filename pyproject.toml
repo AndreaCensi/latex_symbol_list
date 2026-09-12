@@ -3,14 +3,8 @@ name = "LatexSymbolManager-z7"
 version = "7.2"
 readme = ""
 description = ""
-authors = [{name = "Andrea Censi", email = "AndreaCensi@users.noreply.github.com"}]
-dependencies = [
-    "PyYAML",
-    "latex-gen-z7",
-    "zuper-commons-z7",
-    "zuper-ipce-z7",
-    "zuper-typing-z7",
-    "zuper-utils-where-z7",]
+authors = [{ name = "Andrea Censi", email = "AndreaCensi@users.noreply.github.com" }]
+dependencies = ["PyYAML", "latex-gen-z7", "zuper-commons-z7", "zuper-ipce-z7", "zuper-typing-z7", "zuper-utils-where-z7"]
 
 [project.scripts]
 lsm_collect = "latex_symbol_manager.collect:main"
@@ -23,8 +17,7 @@ lsm_test1 = "latex_symbol_manager.parsing:main"
 lsm_test2 = "latex_symbol_manager.parsing_structure:main"
 
 [project.optional-dependencies]
-test = [
-    ]
+test = []
 
 [tool.poetry]
 name = "LatexSymbolManager-z7"
@@ -32,8 +25,8 @@ version = "7.2"
 description = ""
 authors = ["Andrea Censi <AndreaCensi@users.noreply.github.com>"]
 packages = [
-    {from = "src", include = "latex_symbol_manager"},
-    ]
+    { from = "src", include = "latex_symbol_manager" },
+]
 
 [tool.poetry.dependencies]
 PyYAML = "*"
@@ -57,6 +50,5 @@ lsm_test1 = "latex_symbol_manager.parsing:main"
 lsm_test2 = "latex_symbol_manager.parsing_structure:main"
 
 [build-system]
-requires = [
-    "poetry-core>=1.0.0",]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
